@@ -3,7 +3,7 @@
 Sitio por pasos que reemplaza al PowerPoint del experimento colaborativo (DMEyF 2026, Maestría en Data Mining, UBA). Se graba la pantalla mientras se narra y se avanza con el teclado.
 
 - Escenario fijo de **1920×1080** que se escala a la ventana (con bandas si no es 16:9).
-- **64 pasos** (0 a 63) en 10 secciones: 01 Hipótesis · 02 Bibliografía · 03 Sesgos · 04 Diseño · 05 Limitaciones · 06 Resultados · 07 Discusión · 08 Conclusiones · 09 Futuros · 10 Anexo.
+- **61 pasos** (0 a 60) en 10 secciones: 01 Hipótesis · 02 Bibliografía · 03 Sesgos · 04 Diseño · 05 Limitaciones · 06 Resultados · 07 Discusión · 08 Conclusiones · 09 Futuros · 10 Anexo.
 - HTML + CSS + JS, sin build. GSAP 3.12.5 y las tipografías (Inter, JetBrains Mono) están en `vendor/`: **funciona sin conexión**.
 
 ## Cómo abrirlo
@@ -69,23 +69,9 @@ python3 scripts/validar_transcripciones.py
 
 Los Δ contra el baseline y los textos con cifras se calculan en el sitio a partir de `data/datos.js`.
 
-### Agregar el final de la variante 1 (árboles + logística en 201910)
+### Final de la variante 1 (árboles + logística en 201910)
 
-Hoy `data/v1_final_201910.csv` **no existe a propósito**, y la matriz y el paso `v1-final` muestran "pendiente: corre en 201910". Cuando esté el resultado:
-
-1. Guardá `data/v1_final_201910.csv` con el **mismo formato** que `EyFPipeline/resultados/baseline/curvas_ganancia.csv`:
-   ```
-   foto_mes,envios,semilla_<s1>,semilla_<s2>,…,promedio
-   201910,0,0.0,0.0,…,0.0
-   201910,500,…
-   …
-   201910,15000,…
-   ```
-   Una columna por semilla, envíos de 0 a 15.000 cada 500, ganancia en pesos. La media se recalcula desde las semillas.
-2. Opcional: `data/v1_final_201910_metricas.csv` con `foto_mes,semilla,auc,ne,calibracion`.
-3. `python3 scripts/convertir_datos.py`
-
-La fila de la matriz, sus Δ y la curva del paso `v1-final` se completan **sin tocar código**. `scripts/verificar.py` prueba los dos estados con un archivo de prueba que después borra.
+`data/v1_final_curvas_ganancia.csv` y `data/v1_final_metricas.csv` son copias de `EyFPipeline/resultados/v1_rf_lr/final_*.csv`. El brazo A (RF-109, "mismos", C 0,003) va a la matriz; el brazo B (LGBM-12, "separado", C 0,01) aparece como control en el paso `v1-final`. Si se vuelven a correr, se copian de nuevo y se corre `python3 scripts/convertir_datos.py`: la matriz, el paso `v1-final` y las cifras de Discusión y Conclusiones se recalculan solos. Sin esos archivos, el sitio vuelve a mostrar "pendiente".
 
 ## Verificación
 
@@ -99,7 +85,7 @@ python scripts/capturas.py "file://$PWD/index.html" /tmp/capturas   # una captur
 - **Determinismo:** el estado de cada paso es el mismo llegando con →, con `?step=N` y con ←, por huella del DOM en todos los pasos y por píxeles en una muestra.
 - Muchas `→` seguidas no rompen el estado, y `G` funciona.
 - La matriz y los textos con cifras coinciden con un recálculo independiente desde los CSV.
-- Los estados pendiente y completo de la variante 1.
+- La fila y el paso de la variante 1 final, contra los CSV del final.
 - Funciona desde `file://` y desde `http.server`, con la red bloqueada.
 
 ## Estructura

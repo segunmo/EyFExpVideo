@@ -291,20 +291,6 @@
     });
   }
   ESC.biblio1 = root => { const t = T.biblio1; title(root, t); refRows(root, t.refs, 262, 136, 0); };
-  ESC.biblio2 = root => {
-    const t = T.biblio2; title(root, t); refRows(root, t.refs, 262, 136, 0, 1);
-    const a = t.antecedente, rows = D.otroEquipo.filas, x3 = rows.find(r => r.experimento === 'x003'), x1 = rows.find(r => r.experimento === 'x001');
-    root.appendChild(h('div', { cls: 'abs card', style: box(96, 280, 1728, 600) + 'border-left:6px solid var(--accent);padding:40px 48px', anim: [1, 'up', 0.3] },
-      `<span class="num">${a.k}</span><h3 style="font-size:36px">${a.cita}</h3><p style="font-size:30px;margin-top:14px">${a.texto}</p>`));
-    const mx = 4;
-    [[x3, a.x003, 'var(--c-base)'], [x1, a.x001, 'var(--accent)']].forEach(([r, lab, c], i) => {
-      const y = 540 + i * 90;
-      root.appendChild(h('div', { cls: 'abs', style: box(150, y, 420) + 'font-size:28px;color:var(--ink2);text-align:right', anim: [1, 'fade', 0.6 + i * 0.2] }, lab));
-      root.appendChild(h('div', { cls: 'abs', style: box(600, y - 4, 900 * r.delta_vs_b001 / mx, 44) + `background:${c};border-radius:4px`, anim: [1, 'growx', 0.7 + i * 0.2] }));
-      root.appendChild(h('div', { cls: 'abs mono', style: box(600 + 900 * r.delta_vs_b001 / mx + 20, y, 300) + 'font-size:30px;font-weight:700', anim: [1, 'fade', 1.1 + i * 0.2] }, F.dM(r.delta_vs_b001 * 1e6)));
-    });
-    root.appendChild(h('div', { cls: 'abs sub', style: box(150, 760, 1600) + 'color:var(--ink)', anim: [1, 'up', 1.4] }, '→ ' + a.cierre));
-  };
 
   /* ---------------------------------------------------------------- 03 · sesgos */
   ESC.sesgos = root => {
@@ -315,7 +301,8 @@
     root.appendChild(h('div', { cls: 'abs', style: box(900, 590) + 'font-size:56px;color:var(--accent)', anim: [0, 'left', 1.1] }, '→'));
     col(1044, t.demK, t.dem, 'var(--accent)', 1.3);
     root.appendChild(h('div', { cls: 'abs kicker', style: box(96, 750), anim: [1, 'up', 0] }, t.borradorK));
-    t.borrador.forEach((b, i) => root.appendChild(h('div', { cls: 'abs card', style: box(96 + i * 884, 792, 844) + 'padding:20px 28px', anim: [1, 'up', 0.2 + i * 0.2] }, `<h3 style="font-size:28px;margin-bottom:6px">${b.t}</h3><p style="font-size:24px">${b.d}</p>`)));
+    const nb = t.borrador.length, bw = nb > 1 ? 844 : 1728;
+    t.borrador.forEach((b, i) => root.appendChild(h('div', { cls: 'abs card', style: box(96 + i * 884, 792, bw) + 'padding:20px 28px', anim: [1, 'up', 0.2 + i * 0.2] }, `<h3 style="font-size:28px;margin-bottom:6px">${b.t}</h3><p style="font-size:24px">${b.d}</p>`)));
   };
 
   /* ---------------------------------------------------------------- 04 · diseño */

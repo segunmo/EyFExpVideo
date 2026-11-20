@@ -12,8 +12,8 @@ Comprueba:
  2. Apretar → muchas veces seguidas no rompe el estado; G + número + Enter salta.
  3. Números: la matriz y los textos con cifras coinciden con un recálculo independiente
     desde los CSV de data/ (en Python, sin usar data/datos.js).
- 4. Variante 1 final: estado "pendiente" sin archivo y estado completo con un CSV de prueba
-    (que se borra al terminar).
+ 4. Variante 1 final: la fila de la matriz, el paso v1-final y los textos con sus cifras
+    coinciden con data/v1_final_curvas_ganancia.csv y v1_final_metricas.csv.
  5. Funciona desde file:// y desde python3 -m http.server, sin red (se bloquea todo lo externo).
 """
 import asyncio, csv, io, json, os, statistics, subprocess, sys, time
@@ -73,6 +73,14 @@ esperado = {
     "media": float(pr["B_media"]) * 1e6,
     "disp": float(pr["C_dispersion"]) * 1e6,
 }
+vfc = leer("v1_final_curvas_ganancia.csv")
+def final(brazo, modelo):
+    return media_semillas([r for r in vfc if r["brazo"] == brazo and r["modelo"] == modelo], CORTE)
+v1_hib, v1_hib_sem = final("A", "hibrido")
+v1_solo = final("A", "generador solo")[0]
+esperado["v1"] = v1_hib
+v1_bajo = sum(h < b for h, b in zip(v1_hib_sem, base_sem))   # mismas semillas, mismo orden de columnas
+cal_v1 = statistics.mean(float(r["calibracion"]) for r in leer("v1_final_metricas.csv") if r["brazo"] == "A" and r["modelo"] == "hibrido")
 met = [r for r in leer("baseline_metricas.csv") if r["foto_mes"] == "201910" and r["in_sample"] == "False"]
 ne_base = statistics.mean(float(r["ne"]) for r in met)
 cal_base = statistics.mean(float(r["calibracion"]) for r in met)
@@ -87,7 +95,11 @@ mejor_v1 = max(float(r["ganancia_max_agosto"]) for r in mejores)
 dev_max = max(float(r["ganancia"]) for r in leer("baseline_curva_201908.csv"))
 textos_esperados = {  # paso id → textos que tienen que aparecer
     "limitaciones-1": [M(sd_base)],
-    "limitaciones-v1": [es(ne_base, 2), es(cal_base, 1) + "×"],
+    "v1-final": [f"{v1_bajo} de 6 semillas", es(final("B", "hibrido")[0] / 1e6, 1) + " M", es(final("B", "generador solo")[0] / 1e6, 1) + " M",
+                 es(v1_hib / 1e6, 1), es(v1_solo / 1e6, 1)],
+    "discusion-2": [pct(100 * (v1_hib - base) / base), es(v1_solo / 1e6, 1) + " M → " + es(v1_hib / 1e6, 1) + " M",
+                    pct(100 * (v1_hib - v1_solo) / v1_solo), es(cal_v1, 2), es(cal_base, 2)],
+    "conclusiones": [pct(100 * (v1_hib - base) / base)],
     "v1-ganancia": [es(mejor_v1 / 1e6, 1) + " M", es(dev_max / 1e6, 1) + " M"],
     "v1-calibracion": ["NE " + es(min(float(r["ne"]) for r in mejores), 2) + "–" + es(max(float(r["ne"]) for r in mejores), 2),
                        "calib. " + es(min(float(r["calibracion"]) for r in mejores), 2) + "–" + es(max(float(r["calibracion"]) for r in mejores), 2)],
@@ -194,8 +206,8 @@ async def teclas(browser, url):
     ok(await pg.evaluate("document.body.classList.contains('dev') && getComputedStyle(document.getElementById('hud')).display !== 'none'"), "D muestra el HUD de desarrollo")
 
 
-async def numeros(browser, url, v1_presente=False):
-    print("3. Números en pantalla vs. recálculo desde los CSV" + (" (con v1 final de prueba)" if v1_presente else ""))
+async def numeros(browser, url):
+    print("3. Números en pantalla vs. recálculo desde los CSV")
     pg = await nueva(browser)
     await abrir(pg, url, 0)
     pasos = await pg.evaluate("__app.pasos.map(p => p.id)")
@@ -210,28 +222,20 @@ async def numeros(browser, url, v1_presente=False):
             ok(vistos.get(k + ".d", ("", ""))[1] == dM(d), f"Δ $ {k}: {vistos.get(k + '.d', ('', ''))[1]} (esperado {dM(d)})")
             ok(vistos.get(k + ".p", ("", ""))[1] == pct(p), f"Δ % {k}: {vistos.get(k + '.p', ('', ''))[1]} (esperado {pct(p)})")
     pend = await pg.evaluate("document.querySelectorAll('.slide.show [data-pendiente]').length")
-    if v1_presente:
-        g = esperado_v1
-        v, t = vistos.get("v1.g", (None, None))
-        ok(pend == 0 and t == M(g), f"matriz v1 completa: {t} (esperado {M(g)}), Δ % {vistos.get('v1.p', ('', ''))[1]}")
-        await abrir(pg, url, pasos.index("v1-final")); await pg.wait_for_timeout(300)
-        ok(await pg.evaluate("document.querySelectorAll('.slide.show path.ln').length") >= 2, "v1-final dibuja la curva")
-    else:
-        ok(pend == 1 and "v1.g" not in vistos, "matriz v1 en estado pendiente")
-        await abrir(pg, url, pasos.index("v1-final")); await pg.wait_for_timeout(300)
-        ok(await pg.evaluate("document.querySelectorAll('.slide.show [data-pendiente]').length") == 1, "v1-final en estado pendiente")
-        for pid, txts in textos_esperados.items():
-            await abrir(pg, url, pasos.index(pid)); await pg.wait_for_timeout(300)
-            texto = await pg.evaluate("document.querySelector('.slide.show').textContent")
-            for t in txts:
-                ok(t in texto, f"{pid}: aparece «{t}»")
-
-
-esperado_v1 = None
+    ok(pend == 0, "matriz sin filas pendientes")
+    print("4. Variante 1 final (201910)")
+    await abrir(pg, url, pasos.index("v1-final")); await pg.wait_for_timeout(300)
+    ok(await pg.evaluate("document.querySelectorAll('.slide.show path.ln').length") >= 3, "v1-final dibuja las 3 curvas")
+    g = await pg.evaluate("+document.querySelector('.slide.show [data-campo=\"v1final.g\"]').dataset.val")
+    ok(abs(g - v1_hib) < 1, f"v1-final usa la media del híbrido A: {g:.0f} (esperado {v1_hib:.0f})")
+    for pid, txts in textos_esperados.items():
+        await abrir(pg, url, pasos.index(pid)); await pg.wait_for_timeout(300)
+        texto = await pg.evaluate("document.querySelector('.slide.show').textContent")
+        for t in txts:
+            ok(t in texto, f"{pid}: aparece «{t}»")
 
 
 async def main():
-    global esperado_v1
     url_file = (RAIZ / "index.html").as_uri()
     srv = subprocess.Popen([sys.executable, "-m", "http.server", "8765", "--bind", "127.0.0.1"], cwd=RAIZ, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     time.sleep(1.0)
@@ -245,25 +249,6 @@ async def main():
             print("5. Servidor local (python3 -m http.server) sin red")
             pg = await nueva(browser); await abrir(pg, "http://127.0.0.1:8765/index.html", 41)
             ok(not pg.errores and not pg.externos and await pg.evaluate("__app.cur") == 41, "carga por http://localhost sin errores ni pedidos externos")
-            # 4. estado completo de la variante 1 con un CSV de prueba
-            print("4. Variante 1 final: archivo de prueba")
-            prueba = D / "v1_final_201910.csv"
-            assert not prueba.exists(), "data/v1_final_201910.csv ya existe: no se pisa"
-            filas = leer("baseline_curvas_ganancia.csv")
-            with open(prueba, "w", newline="", encoding="utf-8") as f:
-                w = csv.writer(f); cols = [c for c in filas[0] if c.startswith("semilla_")]
-                w.writerow(["foto_mes", "envios"] + cols + ["promedio"])
-                for r in filas:
-                    if r["foto_mes"] != "201910": continue
-                    vals = [float(r[c]) - 5_500_000 if int(r["envios"]) else 0.0 for c in cols]  # dummy: baseline − 5,5 M
-                    w.writerow([r["foto_mes"], r["envios"]] + vals + [sum(vals) / len(vals)])
-            try:
-                subprocess.run([sys.executable, str(RAIZ / "scripts/convertir_datos.py")], check=True)
-                esperado_v1 = base - 5_500_000
-                await numeros(browser, url_file, v1_presente=True)
-            finally:
-                prueba.unlink()
-                subprocess.run([sys.executable, str(RAIZ / "scripts/convertir_datos.py")], check=True)
             await browser.close()
     finally:
         srv.terminate()

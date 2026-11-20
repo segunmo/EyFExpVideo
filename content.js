@@ -95,24 +95,6 @@ window.CONTENIDO = {
         { cita: 'Akiba et al. (2019)', obra: 'Optuna: A Next-generation Hyperparameter Optimization Framework. KDD', tomamos: 'Optimización bayesiana de hiperparámetros (baseline, RF y v2.1).', verificar: true }
       ]
     },
-    biblio2: {
-      kicker: 'Bibliografía',
-      titulo: 'Para cada variante y para los controles',
-      refs: [
-        { cita: 'Vens & Costa (2011)', obra: 'Random Forest Based Feature Induction. IEEE ICDM', tomamos: 'Variables inducidas desde nodos y caminos del bosque: idea detrás de los perfiles de hojas.', verificar: true },
-        { cita: 'Meinshausen (2006)', obra: 'Quantile Regression Forests. JMLR 7, 983–999', tomamos: 'La distribución entre árboles, no solo la media: percentiles (variante 2).', verificar: true },
-        { cita: 'Wager, Hastie & Efron (2014)', obra: 'Confidence Intervals for Random Forests: The Jackknife and the Infinitesimal Jackknife. JMLR 15', tomamos: 'La dispersión entre árboles como incertidumbre (variante 2).', verificar: true },
-        { cita: 'Geurts, Ernst & Wehenkel (2006)', obra: 'Extremely randomized trees. Machine Learning 63, 3–42', tomamos: 'Base de RandomTreesEmbedding: el control sin target (trabajo futuro).', verificar: true },
-        { cita: 'Wolpert (1992)', obra: 'Stacked generalization. Neural Networks 5(2), 241–259', tomamos: 'Control de stacking: ¿el RF aporta más que otro modelo apilado? (trabajo futuro).', verificar: true }
-      ],
-      antecedente: {
-        k: 'Antecedente',
-        cita: 'Otro equipo del curso · “Baseline y features RF” (nov. 2026)',
-        texto: 'Un control sin target (embedding no supervisado) empató con las features RF:',
-        x003: 'control sin target', x001: '+ probabilidad RF',
-        cierre: 'Sin ese control, una mejora no se puede atribuir al RF.'
-      }
-    },
     sesgos: {
       kicker: 'Sesgos',
       titulo: 'Lo que esperábamos antes de correr',
@@ -122,8 +104,7 @@ window.CONTENIDO = {
       // BORRADOR: otros sesgos de los que se cuida el diseño (para que el equipo edite)
       borradorK: 'De qué se cuida el diseño',
       borrador: [
-        { t: 'Elegir el corte mirando el test', d: 'El corte y los hiperparámetros se fijan con agosto; octubre solo se mira para comparar.' },
-        { t: 'Atribuirle al RF lo que causaría cualquier columna extra', d: 'El control sin target del otro equipo empató: hace falta ese control para atribuir.' }
+        { t: 'Elegir el corte mirando el test', d: 'El corte y los hiperparámetros se fijan con agosto; octubre solo se mira para comparar.' }
       ]
     },
     diseno: {
@@ -252,15 +233,6 @@ window.CONTENIDO = {
         { t: 'Comparabilidad', d: 'Mismo universo, corte y presupuesto; hay que verificar que el RF y las matrices sean las mismas entre variantes. v2.1 cambia dos cosas a la vez (entradas e hiperparámetros). 300 árboles para elegir, 1.000 para generar.' }
       ]
     },
-    limit2: {
-      kicker: 'Limitaciones',
-      titulo: 'Variante 1 y desvíos del baseline',
-      v1T: 'Variante 1',
-      v1: ['En “separado” la logística ve un solo mes (≈ 1.250 bajas).', 'El generador vio otras fotos de los mismos clientes.', 'El final en 201910 todavía está pendiente: todo lo que se muestra es desarrollo.'],
-      dT: 'Baseline del equipo vs. el de la cátedra (D1–D8)',
-      d: ['learning_rate fijo en 0,005 y min_data_in_leaf en 0 (D1–D2)', 'is_unbalance = True y otros fijos (D3)', 'final entrenado con 201903–08 (D4)', 'cliente y mes como predictores (D5)', 'corte 4.500 en el notebook vs. 4.000 en las slides (D6)'],
-      calib: 'is_unbalance descalibra al baseline en 201910:', calibNE: 'NE', calibC: 'calibración'
-    },
     matriz: {
       kicker: 'Resultados · 201910',
       titulo: 'Matriz común de resultados',
@@ -268,14 +240,14 @@ window.CONTENIDO = {
       cols: ['Enfoque / variante', 'Ganancia media', 'Δ $', 'Δ %'],
       filas: [
         { k: 'base', t: 'Baseline LightGBM' },
-        { k: 'v1', t: 'Árboles + regresión logística' },
+        { k: 'v1', t: 'Árboles + regresión logística (RF-109)' },
         { k: 'media', t: 'Probabilidades RF · media' },
         { k: 'disp', t: 'Probabilidades RF · dispersión' },
         { k: 'v2', t: 'Perfiles de hojas · HP fijos' },
         { k: 'v21', t: 'Perfiles de hojas · HP reoptimizados' }
       ],
       ref: 'referencia',
-      pie: 'Δ en % del baseline. Baseline: CSV del equipo. Perfiles y Prob RF: tablas del deck. Árboles + logística: corre en 201910.'
+      pie: 'Δ en % del baseline. Baseline y árboles + logística: CSV del equipo (brazo A, fijado antes de mirar 201910). Perfiles y Prob RF: tablas del deck.'
     },
     perfCurvas: {
       kicker: 'Resultados · Perfiles de hojas',
@@ -312,7 +284,7 @@ window.CONTENIDO = {
       ejeX: 'C de la logística (más chico = más regularización)', ejeY: 'AUC en 201908',
       base: 'baseline (desarrollo) 0,9313', solo: 'punteado: generador solo',
       u: 'U invertida: con C grande la logística sobreajusta',
-      pend: 'desarrollo (201908); el final en 201910 está pendiente'
+      pend: 'desarrollo (201908): acá se fijaron los brazos del final, antes de mirar 201910'
     },
     v1gan: {
       kicker: 'Resultados · Variante 1 · desarrollo (201908)',
@@ -324,11 +296,15 @@ window.CONTENIDO = {
       calNota: 'Meses distintos; el baseline usa is_unbalance. La logística sale calibrada: la fortaleza del paper. Pero acá se mide la ganancia en el top-k.'
     },
     v1final: {
-      kicker: 'Resultados · Variante 1 · final',
-      titulo: 'Árboles + logística en 201910',
+      kicker: 'Resultados · Variante 1 · final (201910)',
+      titulo: 'Árboles + logística no le gana al baseline',
+      curvas: 'Zoom · 2.000–6.000 envíos', semillas: 'Las 6 semillas a {corte} envíos',
+      series: { base: 'Baseline', hib: 'RF-109 + logística', solo: 'RF-109 solo' },
+      ejeS: 'Ganancia a {corte} envíos ($ millones)',
+      bajo: '{n} de 6 semillas por debajo del baseline',
+      control: 'Control con LGBM-12 como generador: híbrido {hibB} contra {soloB} del generador solo.',
       pend: 'pendiente: corre en 201910',
-      pendD: 'Cuando esté data/v1_final_201910.csv, esta curva y la fila de la matriz se completan solas.',
-      serie: 'Árboles + logística'
+      pendD: 'Cuando estén data/v1_final_curvas_ganancia.csv y v1_final_metricas.csv, este gráfico y la fila de la matriz se completan solos.'
     },
     disc: {
       kicker: 'Discusión',
@@ -337,8 +313,8 @@ window.CONTENIDO = {
       items: [
         { t: 'Perfiles de hojas', d: 'Las dos versiones superan al baseline a 4.000 envíos ({dv2} / {dv21}), pero los rangos por semilla se superponen y las curvas se cruzan según el corte. Reoptimizar no ayuda en ese corte.' },
         { t: 'Probabilidades RF', d: 'La media empata con el baseline ({dmedia}, dentro del ruido). La dispersión empeora ({ddisp}): probablemente ruido agregado al LightGBM.' },
-        { t: 'Árboles + logística (desarrollo)', d: 'El híbrido mejora a su propio generador RF en todos los casos (más cuanto más débil es el RF) y supera a LGBM-12 solo en “separado”. Ningún híbrido llega al baseline: el mejor queda en {mejorV1} contra {baseDev}. Está bien calibrado, pero la métrica es la ganancia en el top-k.' },
-        { t: 'Atribución', d: 'El control sin target del otro equipo empató con las features RF, y el tutor preguntó qué aporta el RF que no aporte una iteración más de LightGBM. Sin esos controles, una mejora no se puede atribuir al RF. Antecedente: en la primera competencia, hojas de RF como features perdieron −46 M (categóricas) y −12 M (numéricas).' }
+        { t: 'Árboles + logística', d: 'En 201910 queda {dv1} contra el baseline, con las 6 semillas por debajo. Pero la logística sobre las hojas mejora mucho a su propio RF ({solo} → {hib}, {mejora}) y sale calibrada (calibración {calA}, contra {calB} del baseline). La ganancia depende solo del orden.' },
+        { t: 'Atribución', d: 'El tutor preguntó qué aporta el RF que no aporte una iteración más de LightGBM. Sin un control sin target y uno de stacking, una mejora no se puede atribuir al RF.' }
       ]
     },
     concl: {
@@ -347,23 +323,22 @@ window.CONTENIDO = {
       items: [
         'Perfiles de hojas: mejora chica en el corte común de este mes, dentro del rango de ruido entre semillas.',
         'Probabilidades RF: sin mejora clara; la dispersión empeora.',
-        'Árboles + logística: no alcanza al baseline en desarrollo; el final en 201910 está pendiente.',
+        'Árboles + logística: queda {dv1} debajo del baseline en 201910; mejora a su RF y sale calibrada.',
         'No se establece superioridad general ni un ganador entre los tres enfoques.'
       ],
-      h0: 'Sobre H0: con un mes y 6 semillas, ninguna diferencia supera el ruido; no podemos rechazarla. Tampoco podemos afirmarla: el diseño no tiene potencia para eso.'
+      h0: 'Sobre H0: ninguna representación mejora la ganancia más allá del ruido entre semillas; no podemos rechazarla. Tampoco podemos afirmarla: con un mes de test el diseño no tiene potencia para eso.'
     },
     futuro: {
       kicker: 'Trabajo futuro',
       titulo: 'Qué seguiríamos experimentando',
       items: [
-        ['Variante 1 en 201910', 'correr el final y sumarlo a la matriz'],
+        ['Variante 1: más generadores y repartos', 'en más ventanas: agosto no predijo qué generador rinde más en octubre'],
         ['Más ventanas temporales', 'repetir con train, validación y test desplazados'],
         ['Variar el generador RF', 'registrar tiempo, memoria y presupuesto'],
         ['Ablaciones', 'media vs. dispersión, selección de perfiles, política de hiperparámetros'],
         ['Control sin target', 'RandomTreesEmbedding: ¿importa la señal del target?'],
         ['Control de stacking / blend', 'con un LightGBM out-of-fold: la pregunta del tutor'],
-        ['Decisiones fijas en desarrollo', 'y una evaluación posterior independiente'],
-        ['LGBM-hojas + logística', 'como comparación de generadores']
+        ['Decisiones fijas en desarrollo', 'y una evaluación posterior independiente']
       ]
     },
     anexoRepro: {
@@ -441,25 +416,17 @@ window.CONTENIDO = {
       datos: [] },
 
     { id: 'biblio-base', seccion: '02', escena: 'biblio1', beat: 0, titulo: 'Referencias base',
-      pantalla: 'Cinco tarjetas: He et al. 2014, Breiman 2001, Breiman 1996, Ke et al. 2017, Akiba et al. 2019, cada una con qué tomamos.',
+      pantalla: 'Cinco referencias: He et al. 2014, Breiman 2001, Breiman 1996, Ke et al. 2017, Akiba et al. 2019, cada una con qué tomamos.',
       notas: 'La variante de árboles más logística sale del paper de Facebook de 2014. El Random Forest y el out-of-bag son de Breiman; LightGBM y Optuna son las herramientas del baseline.',
       datos: ['verificar: referencias'] },
-    { id: 'biblio-variantes', seccion: '02', escena: 'biblio2', beat: 0, titulo: 'Referencias por variante y antecedente',
-      pantalla: 'Cinco tarjetas más: Vens & Costa, Meinshausen, Wager et al., Geurts et al., Wolpert.',
-      notas: 'Para los perfiles, la inducción de variables desde el bosque; para las probabilidades, los trabajos sobre la distribución entre árboles. Y dos referencias para controles que todavía no corrimos.',
-      datos: ['verificar: referencias'] },
-    { id: 'biblio-antecedente', seccion: '02', escena: 'biblio2', beat: 1, titulo: 'Antecedente: el control sin target',
-      pantalla: 'Tarjeta del antecedente: el control sin target (+3,43 M) empata con + probabilidad RF (+3,14 M).',
-      notas: 'Y un antecedente clave: otro equipo del curso encontró que un control sin target, que no mira las etiquetas, sube lo mismo que las features RF. Sin ese control, una mejora no se puede atribuir al RF.',
-      datos: ['transcripto: informe del otro equipo'] },
 
     { id: 'sesgos-expectativa', seccion: '03', escena: 'sesgos', beat: 0, titulo: 'Expectativa vs. lo que hay que demostrar',
       pantalla: 'El texto del deck sobre la expectativa (bagging + boosting) y dos columnas: expectativa / lo que hay que demostrar.',
       notas: 'Antes de correr esperábamos que juntar dos ensambles con mecánicas opuestas, bagging y boosting, mejorara el resultado, porque modelos decorrelacionados reducen el error. Eso es una expectativa, no un resultado: hay que demostrarlo en la ganancia.',
       datos: [] },
     { id: 'sesgos-diseno', seccion: '03', escena: 'sesgos', beat: 1, titulo: 'De qué se cuida el diseño (borrador)',
-      pantalla: 'Dos sesgos más: elegir el corte mirando el test y atribuirle al RF el efecto de cualquier columna extra.',
-      notas: 'BORRADOR: el diseño también se cuida de elegir el corte mirando octubre, y de atribuirle al RF lo que podría causar cualquier columna nueva.',
+      pantalla: 'Un sesgo más: elegir el corte mirando el test.',
+      notas: 'BORRADOR: el diseño también se cuida de elegir el corte mirando octubre: el corte y los hiperparámetros se fijan con agosto.',
       datos: [] },
 
     { id: 'diseno-variantes', seccion: '04', escena: 'diseno', beat: 0, titulo: 'Tres representaciones',
@@ -575,19 +542,15 @@ window.CONTENIDO = {
       pantalla: 'Tarjetas 3 y 4: AUC ≠ ganancia, agosto es desarrollo, octubre no se reusa; comparabilidad entre variantes.',
       notas: 'El AUC no es la ganancia, y la ganancia simulada no es un efecto causal. Además hay que verificar que todas las variantes usen el mismo RF; v2.1 cambia dos cosas a la vez.',
       datos: [] },
-    { id: 'limitaciones-v1', seccion: '05', escena: 'limit2', beat: 0, titulo: 'Limitaciones: variante 1 y desvíos',
-      pantalla: 'Limitaciones de la variante 1 y desvíos del baseline (D1–D8), con NE y calibración del baseline en 201910.',
-      notas: 'En la variante uno la logística ve un solo mes en el reparto separado, y el final todavía está pendiente. Y nuestro baseline se aparta del de la cátedra: por ejemplo, is_unbalance lo descalibra.',
-      datos: ['exacto: métricas baseline 201910'] },
 
     { id: 'matriz', seccion: '06', escena: 'matriz', beat: 0, titulo: 'Matriz común',
-      pantalla: 'Tabla: ganancia media a 4.000 envíos por variante; la fila de árboles + logística en estado pendiente.',
-      notas: 'Esta es la matriz común: ganancia media de seis semillas en octubre, a cuatro mil envíos. Árboles más logística todavía corre en 201910.',
-      datos: ['exacto: baseline', 'transcripto: perfiles y prob RF', 'pendiente: variante 1'] },
+      pantalla: 'Tabla: ganancia media a 4.000 envíos por variante, incluida árboles + logística (brazo A, RF-109).',
+      notas: 'Esta es la matriz común: ganancia media de seis semillas en octubre, a cuatro mil envíos.',
+      datos: ['exacto: baseline y variante 1', 'transcripto: perfiles y prob RF'] },
     { id: 'matriz-deltas', seccion: '06', escena: 'matriz', beat: 1, titulo: 'Diferencias contra el baseline',
       pantalla: 'Barras divergentes alrededor de 0 con el Δ $ y Δ % de cada variante.',
-      notas: 'Contra el baseline: perfiles suma uno coma sesenta y cinco y uno coma cero ocho por ciento; la media del RF, cero coma diecinueve; la dispersión resta uno coma cero dos.',
-      datos: ['exacto: baseline', 'transcripto: perfiles y prob RF'] },
+      notas: 'Contra el baseline: perfiles suma uno coma sesenta y cinco y uno coma cero ocho por ciento; la media del RF, cero coma diecinueve; la dispersión resta uno coma cero dos, y árboles más logística resta dos coma treinta y cinco.',
+      datos: ['exacto: baseline y variante 1', 'transcripto: perfiles y prob RF'] },
     { id: 'perfiles-curvas', seccion: '06', escena: 'perfCurvas', beat: 0, titulo: 'Perfiles: curva completa',
       pantalla: 'Curvas completas 0–15.000: baseline, perfiles HP fijos, perfiles reoptimizados; corte en 4.000.',
       notas: 'Las curvas completas de perfiles casi se superponen con la del baseline.',
@@ -629,26 +592,26 @@ window.CONTENIDO = {
       notas: 'Donde el híbrido sí se destaca es en la calibración, que es la fortaleza del paper. Pero son meses distintos y nuestra métrica es la ganancia en la punta.',
       datos: ['exacto: métricas v1 y baseline'] },
     { id: 'v1-final', seccion: '06', escena: 'v1final', beat: 0, titulo: 'Variante 1: final en 201910',
-      pantalla: 'Panel del final en 201910: estado pendiente (o la curva, si el archivo existe).',
-      notas: 'El final de la variante uno en octubre todavía está corriendo; cuando esté, se completa acá y en la matriz.',
-      datos: ['pendiente: v1_final_201910.csv'] },
+      pantalla: 'Zoom 2.000–6.000 de las curvas en 201910 (baseline, RF-109 + logística, RF-109 solo) y las 6 semillas a 4.000; abajo, el control con LGBM-12.',
+      notas: 'En el final, con la configuración fijada en agosto, el híbrido queda dos coma tres por ciento debajo del baseline, con las seis semillas por debajo. Lo que sí hace la logística es levantar mucho a su propio Random Forest: casi veinte millones.',
+      datos: ['exacto: final_curvas_ganancia.csv y final_metricas.csv'] },
 
     { id: 'discusion-1', seccion: '07', escena: 'disc', beat: 0, titulo: 'Discusión: perfiles y probabilidades',
       pantalla: 'Puntos 1 y 2 de la discusión (borrador).',
       notas: 'BORRADOR: los perfiles superan al baseline en el corte común, pero dentro del ruido. La media del RF empata y la dispersión empeora.',
       datos: ['exacto/transcripto: Δ de la matriz'] },
     { id: 'discusion-2', seccion: '07', escena: 'disc', beat: 1, titulo: 'Discusión: variante 1',
-      pantalla: 'Punto 3 (borrador).',
-      notas: 'BORRADOR: el híbrido mejora a su propio Random Forest pero no llega al baseline en desarrollo.',
-      datos: ['exacto: desarrollo v1'] },
+      pantalla: 'Punto 3 (borrador): árboles + logística en 201910.',
+      notas: 'BORRADOR: el híbrido no le gana al baseline, pero mejora mucho a su propio Random Forest y sale calibrado; la ganancia depende solo del orden.',
+      datos: ['exacto: final v1'] },
     { id: 'discusion-3', seccion: '07', escena: 'disc', beat: 2, titulo: 'Discusión: atribución',
-      pantalla: 'Punto 4 (borrador): el control sin target y la pregunta del tutor.',
+      pantalla: 'Punto 4 (borrador): la pregunta del tutor y los controles que faltan.',
       notas: 'BORRADOR: sin un control sin target y un control de stacking, una mejora no se puede atribuir al Random Forest.',
-      datos: ['transcripto: otro equipo'] },
+      datos: [] },
 
     { id: 'conclusiones', seccion: '08', escena: 'concl', beat: 0, titulo: 'Conclusiones (borrador)',
       pantalla: 'Cuatro conclusiones cortas (borrador).',
-      notas: 'BORRADOR: tenemos evidencia parcial. Hay una mejora chica para perfiles en el corte común, dentro del ruido, y ningún ganador entre los tres enfoques.',
+      notas: 'BORRADOR: tenemos evidencia parcial. Hay una mejora chica para perfiles en el corte común, dentro del ruido; árboles más logística queda abajo, y no hay un ganador entre los tres enfoques.',
       datos: [] },
     { id: 'conclusiones-h0', seccion: '08', escena: 'concl', beat: 1, titulo: 'Qué decimos de H0 (borrador)',
       pantalla: 'Recuadro sobre H0.',
@@ -656,8 +619,8 @@ window.CONTENIDO = {
       datos: [] },
 
     { id: 'futuro', seccion: '09', escena: 'futuro', beat: 0, titulo: 'Trabajo futuro',
-      pantalla: 'Ocho líneas de trabajo futuro, con los dos controles destacados.',
-      notas: 'Lo que seguiríamos: completar la variante uno en octubre, más ventanas temporales, ablaciones y, sobre todo, dos controles: uno sin target y uno de stacking con un LightGBM out-of-fold.',
+      pantalla: 'Siete líneas de trabajo futuro, con los dos controles destacados.',
+      notas: 'Lo que seguiríamos: más ventanas temporales, más generadores para la variante uno, ablaciones y, sobre todo, dos controles: uno sin target y uno de stacking con un LightGBM out-of-fold.',
       datos: [] },
 
     { id: 'anexo-repro', seccion: '10', escena: 'anexoRepro', beat: 0, titulo: 'Anexo: reproducibilidad',

@@ -2,7 +2,7 @@
 
 > Generado desde `content.js` con `node scripts/generar_guion.js`. **No editar a mano:** los cambios se hacen en `content.js` y se regenera.
 
-- 64 pasos (0 a 63). Narración sugerida: 1655 palabras ≈ 12 min a 140 palabras por minuto, más las pausas de las animaciones.
+- 61 pasos (0 a 60). Narración sugerida: 1594 palabras ≈ 11 min a 140 palabras por minuto, más las pausas de las animaciones.
 - Para grabar una sección: `G` + número del primer paso + `Enter`, y avanzar con `→`.
 - Los textos marcados **BORRADOR** son propuestas para que el equipo los reescriba.
 - Presentador: completar `presentadores` en `content.js`.
@@ -11,16 +11,16 @@
 |---|---|---|
 | Portada | 0–0 | — |
 | 01 · Hipótesis | 1–6 | — |
-| 02 · Bibliografía | 7–9 | — |
-| 03 · Sesgos | 10–11 | — |
-| 04 · Diseño experimental | 12–37 | — |
-| 05 · Limitaciones | 38–40 | — |
-| 06 · Resultados | 41–53 | — |
-| 07 · Discusión | 54–56 | — |
-| 08 · Conclusiones | 57–58 | — |
-| 09 · Trabajo futuro | 59–59 | — |
-| 10 · Anexo | 60–62 | — |
-| Cierre | 63–63 | — |
+| 02 · Bibliografía | 7–7 | — |
+| 03 · Sesgos | 8–9 | — |
+| 04 · Diseño experimental | 10–35 | — |
+| 05 · Limitaciones | 36–37 | — |
+| 06 · Resultados | 38–50 | — |
+| 07 · Discusión | 51–53 | — |
+| 08 · Conclusiones | 54–55 | — |
+| 09 · Trabajo futuro | 56–56 | — |
+| 10 · Anexo | 57–59 | — |
+| Cierre | 60–60 | — |
 
 ## Portada
 
@@ -78,45 +78,29 @@
 
 ### Paso 7 · `biblio-base` — Referencias base
 
-**En pantalla:** Cinco tarjetas: He et al. 2014, Breiman 2001, Breiman 1996, Ke et al. 2017, Akiba et al. 2019, cada una con qué tomamos.
+**En pantalla:** Cinco referencias: He et al. 2014, Breiman 2001, Breiman 1996, Ke et al. 2017, Akiba et al. 2019, cada una con qué tomamos.
 
 **Narración sugerida:** La variante de árboles más logística sale del paper de Facebook de 2014. El Random Forest y el out-of-bag son de Breiman; LightGBM y Optuna son las herramientas del baseline.
 
 *Datos:* verificar: referencias
 
-### Paso 8 · `biblio-variantes` — Referencias por variante y antecedente
-
-**En pantalla:** Cinco tarjetas más: Vens & Costa, Meinshausen, Wager et al., Geurts et al., Wolpert.
-
-**Narración sugerida:** Para los perfiles, la inducción de variables desde el bosque; para las probabilidades, los trabajos sobre la distribución entre árboles. Y dos referencias para controles que todavía no corrimos.
-
-*Datos:* verificar: referencias
-
-### Paso 9 · `biblio-antecedente` — Antecedente: el control sin target
-
-**En pantalla:** Tarjeta del antecedente: el control sin target (+3,43 M) empata con + probabilidad RF (+3,14 M).
-
-**Narración sugerida:** Y un antecedente clave: otro equipo del curso encontró que un control sin target, que no mira las etiquetas, sube lo mismo que las features RF. Sin ese control, una mejora no se puede atribuir al RF.
-
-*Datos:* transcripto: informe del otro equipo
-
 ## 03 · Sesgos
 
-### Paso 10 · `sesgos-expectativa` — Expectativa vs. lo que hay que demostrar
+### Paso 8 · `sesgos-expectativa` — Expectativa vs. lo que hay que demostrar
 
 **En pantalla:** El texto del deck sobre la expectativa (bagging + boosting) y dos columnas: expectativa / lo que hay que demostrar.
 
 **Narración sugerida:** Antes de correr esperábamos que juntar dos ensambles con mecánicas opuestas, bagging y boosting, mejorara el resultado, porque modelos decorrelacionados reducen el error. Eso es una expectativa, no un resultado: hay que demostrarlo en la ganancia.
 
-### Paso 11 · `sesgos-diseno` — De qué se cuida el diseño (borrador)
+### Paso 9 · `sesgos-diseno` — De qué se cuida el diseño (borrador)
 
-**En pantalla:** Dos sesgos más: elegir el corte mirando el test y atribuirle al RF el efecto de cualquier columna extra.
+**En pantalla:** Un sesgo más: elegir el corte mirando el test.
 
-**Narración sugerida:** BORRADOR: el diseño también se cuida de elegir el corte mirando octubre, y de atribuirle al RF lo que podría causar cualquier columna nueva.
+**Narración sugerida:** BORRADOR: el diseño también se cuida de elegir el corte mirando octubre: el corte y los hiperparámetros se fijan con agosto.
 
 ## 04 · Diseño experimental
 
-### Paso 12 · `diseno-variantes` — Tres representaciones
+### Paso 10 · `diseno-variantes` — Tres representaciones
 
 **En pantalla:** Tres columnas: árboles + logística, probabilidades RF, perfiles de hojas; abajo el control.
 
@@ -124,37 +108,37 @@
 
 *Datos:* exacto: hiperparámetros del baseline (HANDOFF)
 
-### Paso 13 · `dataset` — Dataset y target
+### Paso 11 · `dataset` — Dataset y target
 
 **En pantalla:** Tabla con columnas reales (ctrx_quarter, mcaja_ahorro, … y sus _lag/_delta); la columna de clase pasa a binaria.
 
 **Narración sugerida:** Los datos son de 2019: 152 variables con sus lags y deltas de uno y dos meses. El target junta BAJA_1 y BAJA_2, pero la ganancia paga solo BAJA_2.
 
-### Paso 14 · `calendario-seleccion` — Calendario: selección del RF
+### Paso 12 · `calendario-seleccion` — Calendario: selección del RF
 
 **En pantalla:** Línea de tiempo 201901–201912; enero y febrero solo para lags; la selección del RF se ajusta en 03–05 y se evalúa en 06.
 
 **Narración sugerida:** Todas las variantes comparten un calendario. Enero y febrero solo sirven para construir lags. El Random Forest se elige ajustando con marzo a mayo y midiendo AUC en junio.
 
-### Paso 15 · `calendario-desarrollo` — Calendario: RF definitivo y desarrollo
+### Paso 13 · `calendario-desarrollo` — Calendario: RF definitivo y desarrollo
 
 **En pantalla:** RF definitivo 03–06 (OOB en train, todos los árboles para 07, 08, 10) y LightGBM de desarrollo 03–06 → 08.
 
 **Narración sugerida:** El RF definitivo se ajusta con marzo a junio. El LightGBM de desarrollo entrena con esos meses y se evalúa en agosto: ahí se miran el AUC y el corte.
 
-### Paso 16 · `calendario-final` — Calendario: final y test
+### Paso 14 · `calendario-final` — Calendario: final y test
 
 **En pantalla:** LightGBM final 03–08 con 6 semillas; 201910 resaltado como test.
 
 **Narración sugerida:** El modelo final entrena de marzo a agosto con seis semillas, y la ganancia se mide en octubre, que no se usa para nada más.
 
-### Paso 17 · `calendario-huecos` — Calendario: los huecos
+### Paso 15 · `calendario-huecos` — Calendario: los huecos
 
 **En pantalla:** Se marcan 201907 (salteado en desarrollo) y 201911–12 (excluidos), con su explicación.
 
 **Narración sugerida:** Julio se saltea en desarrollo porque su BAJA_2 recién se conoce en septiembre. Noviembre y diciembre nunca se usan: uno solo tiene BAJA_1 y el otro no tiene clase.
 
-### Paso 18 · `arbol` — Un árbol de decisión
+### Paso 16 · `arbol` — Un árbol de decisión
 
 **En pantalla:** Se dibuja un árbol chico con cortes en ctrx_quarter, mcaja_ahorro y cliente_antiguedad (ilustrativo).
 
@@ -162,7 +146,7 @@
 
 *Datos:* ilustrativo
 
-### Paso 19 · `arbol-recorrido` — La hoja es una regla
+### Paso 17 · `arbol-recorrido` — La hoja es una regla
 
 **En pantalla:** Una fila recorre el árbol y cae en una hoja con su probabilidad; el camino se escribe como regla.
 
@@ -170,7 +154,7 @@
 
 *Datos:* ilustrativo
 
-### Paso 20 · `rf` — Random Forest: bagging
+### Paso 18 · `rf` — Random Forest: bagging
 
 **En pantalla:** Tres árboles en paralelo sobre muestras bootstrap, que se promedian.
 
@@ -178,7 +162,7 @@
 
 *Datos:* ilustrativo
 
-### Paso 21 · `gbdt` — LightGBM: boosting
+### Paso 19 · `gbdt` — LightGBM: boosting
 
 **En pantalla:** Árboles en serie, cada uno sobre el error del anterior; abajo: hojas superpuestas (RF) vs. complementarias (GBDT).
 
@@ -186,7 +170,7 @@
 
 *Datos:* ilustrativo
 
-### Paso 22 · `oob-matriz` — Out-of-bag: la matriz
+### Paso 20 · `oob-matriz` — Out-of-bag: la matriz
 
 **En pantalla:** Matriz filas × árboles; cada árbol marca las filas de su bootstrap (in-bag).
 
@@ -194,7 +178,7 @@
 
 *Datos:* ilustrativo
 
-### Paso 23 · `oob-fila` — Out-of-bag: una fila
+### Paso 21 · `oob-fila` — Out-of-bag: una fila
 
 **En pantalla:** Se resalta una fila: sus árboles elegibles (OOB) se encienden; el resto se atenúa.
 
@@ -202,7 +186,7 @@
 
 *Datos:* ilustrativo
 
-### Paso 24 · `oob-despues` — Out-of-bag: meses posteriores y límite
+### Paso 22 · `oob-despues` — Out-of-bag: meses posteriores y límite
 
 **En pantalla:** Los meses 07, 08 y 10 usan todos los árboles; recuadro con la limitación (por fila, no por cliente ni tiempo).
 
@@ -210,7 +194,7 @@
 
 *Datos:* ilustrativo
 
-### Paso 25 · `v1-onehot` — Variante 1: hojas → one-hot
+### Paso 23 · `v1-onehot` — Variante 1: hojas → one-hot
 
 **En pantalla:** Una fila pasa por 3 árboles → ids de hoja [2, 1, 3] → el vector one-hot se arma bloque por bloque.
 
@@ -218,7 +202,7 @@
 
 *Datos:* ilustrativo
 
-### Paso 26 · `v1-logistica` — Variante 1: pesos y sigmoide
+### Paso 24 · `v1-logistica` — Variante 1: pesos y sigmoide
 
 **En pantalla:** Cada 1 toma el peso de su hoja; se suman y pasan por una sigmoide → probabilidad.
 
@@ -226,7 +210,7 @@
 
 *Datos:* ilustrativo
 
-### Paso 27 · `v1-escala` — Variante 1: escala real
+### Paso 25 · `v1-escala` — Variante 1: escala real
 
 **En pantalla:** Números reales de RF-109: 300 árboles, 27.784 columnas, 300 unos por fila, 38,5 M no nulos, 0,43 GB, 3,6 s.
 
@@ -234,19 +218,19 @@
 
 *Datos:* exacto: medicion_costo.csv
 
-### Paso 28 · `v1-repartos` — Variante 1: dos repartos
+### Paso 26 · `v1-repartos` — Variante 1: dos repartos
 
 **En pantalla:** Dos líneas de tiempo: separado (generador 03–05, logística 06) y mismos (ambos 03–06), evaluadas en 201908.
 
 **Narración sugerida:** Probamos dos repartos de meses: separado, donde la logística aprende en un mes que el generador no vio, y mismos, con el mismo calendario que el baseline.
 
-### Paso 29 · `v1-dial` — Variante 1: C y generadores
+### Paso 27 · `v1-dial` — Variante 1: C y generadores
 
 **En pantalla:** Dial de C de 1e-4 a 1 (más chico = más regularización) y los cuatro generadores: RF-12, RF-32, RF-109, LGBM-12.
 
 **Narración sugerida:** La regularización se controla con C: más chico, más regularización. Y variamos el generador: tres Random Forest de distinto tamaño de hoja y el LightGBM de doce hojas del paper.
 
-### Paso 30 · `v2-arboles` — Variante 2: una probabilidad por árbol
+### Paso 28 · `v2-arboles` — Variante 2: una probabilidad por árbol
 
 **En pantalla:** Una fila pasa por muchos árboles; cada uno emite una probabilidad que cae en una tira de puntos.
 
@@ -254,7 +238,7 @@
 
 *Datos:* ilustrativo
 
-### Paso 31 · `v2-stats` — Variante 2: estadísticos
+### Paso 29 · `v2-stats` — Variante 2: estadísticos
 
 **En pantalla:** Sobre la tira se marcan media, desvío, percentiles P10–P90, rango e IQR.
 
@@ -262,7 +246,7 @@
 
 *Datos:* ilustrativo
 
-### Paso 32 · `v2-columnas` — Variante 2: columnas nuevas
+### Paso 30 · `v2-columnas` — Variante 2: columnas nuevas
 
 **En pantalla:** Los valores vuelan a columnas nuevas (rfd_media, rfd_desvio, …) a la derecha de la tabla de LightGBM; brazos B y C.
 
@@ -270,7 +254,7 @@
 
 *Datos:* ilustrativo
 
-### Paso 33 · `v3-padre` — Variante 3: el último split
+### Paso 31 · `v3-padre` — Variante 3: el último split
 
 **En pantalla:** La fila baja por cuatro árboles; en cada uno se resalta el nodo padre de la hoja y se extrae su variable.
 
@@ -278,7 +262,7 @@
 
 *Datos:* ilustrativo
 
-### Paso 34 · `v3-frecuencias` — Variante 3: frecuencias
+### Paso 32 · `v3-frecuencias` — Variante 3: frecuencias
 
 **En pantalla:** Conteo por variable dividido por los árboles elegibles (OOB) → vector de frecuencias.
 
@@ -286,7 +270,7 @@
 
 *Datos:* ilustrativo
 
-### Paso 35 · `v3-columnas` — Variante 3: columnas y versiones
+### Paso 33 · `v3-columnas` — Variante 3: columnas y versiones
 
 **En pantalla:** Las frecuencias se agregan como rf_perfil_<variable>; qué conserva y qué descarta; v2 (HP fijos) y v2.1 (reoptimizado).
 
@@ -294,7 +278,7 @@
 
 *Datos:* ilustrativo
 
-### Paso 36 · `eval-semillas` — Evaluación: 6 semillas
+### Paso 34 · `eval-semillas` — Evaluación: 6 semillas
 
 **En pantalla:** Las 6 curvas reales del baseline en 201910 y la media Ĝ(k) al mismo corte.
 
@@ -302,7 +286,7 @@
 
 *Datos:* exacto: curvas baseline por semilla
 
-### Paso 37 · `eval-reglas` — Evaluación: corte y métricas
+### Paso 35 · `eval-reglas` — Evaluación: corte y métricas
 
 **En pantalla:** Corte fijado en desarrollo; 201910 solo para comparar; métricas AUC, ganancia, NE y calibración.
 
@@ -310,7 +294,7 @@
 
 ## 05 · Limitaciones
 
-### Paso 38 · `limitaciones-1` — Limitaciones: incertidumbre y OOB
+### Paso 36 · `limitaciones-1` — Limitaciones: incertidumbre y OOB
 
 **En pantalla:** Tarjetas 1 y 2: un mes y 6 semillas (desvío del baseline ≈ 4,54 M) y OOB por fila.
 
@@ -318,39 +302,31 @@
 
 *Datos:* exacto: desvío por semilla del baseline
 
-### Paso 39 · `limitaciones-2` — Limitaciones: métricas y comparabilidad
+### Paso 37 · `limitaciones-2` — Limitaciones: métricas y comparabilidad
 
 **En pantalla:** Tarjetas 3 y 4: AUC ≠ ganancia, agosto es desarrollo, octubre no se reusa; comparabilidad entre variantes.
 
 **Narración sugerida:** El AUC no es la ganancia, y la ganancia simulada no es un efecto causal. Además hay que verificar que todas las variantes usen el mismo RF; v2.1 cambia dos cosas a la vez.
 
-### Paso 40 · `limitaciones-v1` — Limitaciones: variante 1 y desvíos
-
-**En pantalla:** Limitaciones de la variante 1 y desvíos del baseline (D1–D8), con NE y calibración del baseline en 201910.
-
-**Narración sugerida:** En la variante uno la logística ve un solo mes en el reparto separado, y el final todavía está pendiente. Y nuestro baseline se aparta del de la cátedra: por ejemplo, is_unbalance lo descalibra.
-
-*Datos:* exacto: métricas baseline 201910
-
 ## 06 · Resultados
 
-### Paso 41 · `matriz` — Matriz común
+### Paso 38 · `matriz` — Matriz común
 
-**En pantalla:** Tabla: ganancia media a 4.000 envíos por variante; la fila de árboles + logística en estado pendiente.
+**En pantalla:** Tabla: ganancia media a 4.000 envíos por variante, incluida árboles + logística (brazo A, RF-109).
 
-**Narración sugerida:** Esta es la matriz común: ganancia media de seis semillas en octubre, a cuatro mil envíos. Árboles más logística todavía corre en 201910.
+**Narración sugerida:** Esta es la matriz común: ganancia media de seis semillas en octubre, a cuatro mil envíos.
 
-*Datos:* exacto: baseline · transcripto: perfiles y prob RF · pendiente: variante 1
+*Datos:* exacto: baseline y variante 1 · transcripto: perfiles y prob RF
 
-### Paso 42 · `matriz-deltas` — Diferencias contra el baseline
+### Paso 39 · `matriz-deltas` — Diferencias contra el baseline
 
 **En pantalla:** Barras divergentes alrededor de 0 con el Δ $ y Δ % de cada variante.
 
-**Narración sugerida:** Contra el baseline: perfiles suma uno coma sesenta y cinco y uno coma cero ocho por ciento; la media del RF, cero coma diecinueve; la dispersión resta uno coma cero dos.
+**Narración sugerida:** Contra el baseline: perfiles suma uno coma sesenta y cinco y uno coma cero ocho por ciento; la media del RF, cero coma diecinueve; la dispersión resta uno coma cero dos, y árboles más logística resta dos coma treinta y cinco.
 
-*Datos:* exacto: baseline · transcripto: perfiles y prob RF
+*Datos:* exacto: baseline y variante 1 · transcripto: perfiles y prob RF
 
-### Paso 43 · `perfiles-curvas` — Perfiles: curva completa
+### Paso 40 · `perfiles-curvas` — Perfiles: curva completa
 
 **En pantalla:** Curvas completas 0–15.000: baseline, perfiles HP fijos, perfiles reoptimizados; corte en 4.000.
 
@@ -358,7 +334,7 @@
 
 *Datos:* exacto: baseline · transcripto: perfiles (págs. 16 y 18)
 
-### Paso 44 · `perfiles-zoom` — Perfiles: zoom
+### Paso 41 · `perfiles-zoom` — Perfiles: zoom
 
 **En pantalla:** Zoom 2.000–6.000: en 4.000 los perfiles quedan arriba; las curvas se cruzan según el corte.
 
@@ -366,7 +342,7 @@
 
 *Datos:* exacto: baseline · transcripto: perfiles (págs. 16 y 18)
 
-### Paso 45 · `perfiles-semillas` — Perfiles: las 6 semillas
+### Paso 42 · `perfiles-semillas` — Perfiles: las 6 semillas
 
 **En pantalla:** Puntos por semilla a 4.000 envíos con su media; los rangos se superponen. Importancia: los perfiles dominan el top 10.
 
@@ -374,7 +350,7 @@
 
 *Datos:* exacto: baseline · transcripto: perfiles e importancia
 
-### Paso 46 · `prob-curvas` — Probabilidades RF: curva completa
+### Paso 43 · `prob-curvas` — Probabilidades RF: curva completa
 
 **En pantalla:** Curvas completas: baseline (A), + media (B), + dispersión (C).
 
@@ -382,7 +358,7 @@
 
 *Datos:* exacto: baseline · transcripto: prob RF (pág. 21)
 
-### Paso 47 · `prob-zoom` — Probabilidades RF: zoom
+### Paso 44 · `prob-zoom` — Probabilidades RF: zoom
 
 **En pantalla:** Zoom 2.000–6.000: B empata con A en 4.000; C queda abajo.
 
@@ -390,7 +366,7 @@
 
 *Datos:* exacto: baseline · transcripto: prob RF (pág. 21)
 
-### Paso 48 · `prob-importancia` — Probabilidades RF: importancia
+### Paso 45 · `prob-importancia` — Probabilidades RF: importancia
 
 **En pantalla:** Barras de importancia: rfd_media primera en el brazo B (5,86 %); en C, las de dispersión aparecen entre las primeras.
 
@@ -398,7 +374,7 @@
 
 *Datos:* transcripto: importancia (pág. 24)
 
-### Paso 49 · `v1-auc-separado` — Variante 1: AUC vs. C (separado)
+### Paso 46 · `v1-auc-separado` — Variante 1: AUC vs. C (separado)
 
 **En pantalla:** AUC en 201908 según C para los 4 generadores (separado); punteado = generador solo; rayado = baseline 0,9313.
 
@@ -406,7 +382,7 @@
 
 *Datos:* exacto: desarrollo_metricas.csv
 
-### Paso 50 · `v1-auc-mismos` — Variante 1: AUC vs. C (mismos)
+### Paso 47 · `v1-auc-mismos` — Variante 1: AUC vs. C (mismos)
 
 **En pantalla:** Segundo panel: reparto mismos.
 
@@ -414,7 +390,7 @@
 
 *Datos:* exacto: desarrollo_metricas.csv
 
-### Paso 51 · `v1-ganancia` — Variante 1: ganancia en desarrollo
+### Paso 48 · `v1-ganancia` — Variante 1: ganancia en desarrollo
 
 **En pantalla:** Curvas de ganancia en 201908 con el mejor C por generador (dos repartos) contra la curva de desarrollo del baseline.
 
@@ -422,7 +398,7 @@
 
 *Datos:* exacto: desarrollo_curvas.csv · transcripto: curva 201908 del baseline
 
-### Paso 52 · `v1-calibracion` — Variante 1: calibración
+### Paso 49 · `v1-calibracion` — Variante 1: calibración
 
 **En pantalla:** Recuadro: NE y calibración del híbrido (201908) vs. del baseline (201910), como propiedad.
 
@@ -430,17 +406,17 @@
 
 *Datos:* exacto: métricas v1 y baseline
 
-### Paso 53 · `v1-final` — Variante 1: final en 201910
+### Paso 50 · `v1-final` — Variante 1: final en 201910
 
-**En pantalla:** Panel del final en 201910: estado pendiente (o la curva, si el archivo existe).
+**En pantalla:** Zoom 2.000–6.000 de las curvas en 201910 (baseline, RF-109 + logística, RF-109 solo) y las 6 semillas a 4.000; abajo, el control con LGBM-12.
 
-**Narración sugerida:** El final de la variante uno en octubre todavía está corriendo; cuando esté, se completa acá y en la matriz.
+**Narración sugerida:** En el final, con la configuración fijada en agosto, el híbrido queda dos coma tres por ciento debajo del baseline, con las seis semillas por debajo. Lo que sí hace la logística es levantar mucho a su propio Random Forest: casi veinte millones.
 
-*Datos:* pendiente: v1_final_201910.csv
+*Datos:* exacto: final_curvas_ganancia.csv y final_metricas.csv
 
 ## 07 · Discusión
 
-### Paso 54 · `discusion-1` — Discusión: perfiles y probabilidades
+### Paso 51 · `discusion-1` — Discusión: perfiles y probabilidades
 
 **En pantalla:** Puntos 1 y 2 de la discusión (borrador).
 
@@ -448,31 +424,29 @@
 
 *Datos:* exacto/transcripto: Δ de la matriz
 
-### Paso 55 · `discusion-2` — Discusión: variante 1
+### Paso 52 · `discusion-2` — Discusión: variante 1
 
-**En pantalla:** Punto 3 (borrador).
+**En pantalla:** Punto 3 (borrador): árboles + logística en 201910.
 
-**Narración sugerida:** BORRADOR: el híbrido mejora a su propio Random Forest pero no llega al baseline en desarrollo.
+**Narración sugerida:** BORRADOR: el híbrido no le gana al baseline, pero mejora mucho a su propio Random Forest y sale calibrado; la ganancia depende solo del orden.
 
-*Datos:* exacto: desarrollo v1
+*Datos:* exacto: final v1
 
-### Paso 56 · `discusion-3` — Discusión: atribución
+### Paso 53 · `discusion-3` — Discusión: atribución
 
-**En pantalla:** Punto 4 (borrador): el control sin target y la pregunta del tutor.
+**En pantalla:** Punto 4 (borrador): la pregunta del tutor y los controles que faltan.
 
 **Narración sugerida:** BORRADOR: sin un control sin target y un control de stacking, una mejora no se puede atribuir al Random Forest.
 
-*Datos:* transcripto: otro equipo
-
 ## 08 · Conclusiones
 
-### Paso 57 · `conclusiones` — Conclusiones (borrador)
+### Paso 54 · `conclusiones` — Conclusiones (borrador)
 
 **En pantalla:** Cuatro conclusiones cortas (borrador).
 
-**Narración sugerida:** BORRADOR: tenemos evidencia parcial. Hay una mejora chica para perfiles en el corte común, dentro del ruido, y ningún ganador entre los tres enfoques.
+**Narración sugerida:** BORRADOR: tenemos evidencia parcial. Hay una mejora chica para perfiles en el corte común, dentro del ruido; árboles más logística queda abajo, y no hay un ganador entre los tres enfoques.
 
-### Paso 58 · `conclusiones-h0` — Qué decimos de H0 (borrador)
+### Paso 55 · `conclusiones-h0` — Qué decimos de H0 (borrador)
 
 **En pantalla:** Recuadro sobre H0.
 
@@ -480,15 +454,15 @@
 
 ## 09 · Trabajo futuro
 
-### Paso 59 · `futuro` — Trabajo futuro
+### Paso 56 · `futuro` — Trabajo futuro
 
-**En pantalla:** Ocho líneas de trabajo futuro, con los dos controles destacados.
+**En pantalla:** Siete líneas de trabajo futuro, con los dos controles destacados.
 
-**Narración sugerida:** Lo que seguiríamos: completar la variante uno en octubre, más ventanas temporales, ablaciones y, sobre todo, dos controles: uno sin target y uno de stacking con un LightGBM out-of-fold.
+**Narración sugerida:** Lo que seguiríamos: más ventanas temporales, más generadores para la variante uno, ablaciones y, sobre todo, dos controles: uno sin target y uno de stacking con un LightGBM out-of-fold.
 
 ## 10 · Anexo
 
-### Paso 60 · `anexo-repro` — Anexo: reproducibilidad
+### Paso 57 · `anexo-repro` — Anexo: reproducibilidad
 
 **En pantalla:** Semillas, huellas, determinismo y procedencia de los números.
 
@@ -496,7 +470,7 @@
 
 *Datos:* exacto: manifiesto baseline
 
-### Paso 61 · `anexo-corte` — Anexo: el corte
+### Paso 58 · `anexo-corte` — Anexo: el corte
 
 **En pantalla:** Curva del baseline con 4.000 y 4.500 marcados y las tres políticas de corte del equipo.
 
@@ -504,7 +478,7 @@
 
 *Datos:* exacto: curva baseline
 
-### Paso 62 · `anexo-desvios` — Anexo: desvíos D1–D8
+### Paso 59 · `anexo-desvios` — Anexo: desvíos D1–D8
 
 **En pantalla:** Tabla de desvíos del baseline del equipo respecto de las notas de la cátedra.
 
@@ -512,7 +486,7 @@
 
 ## Cierre
 
-### Paso 63 · `cierre` — Cierre
+### Paso 60 · `cierre` — Cierre
 
 **En pantalla:** Gracias / ¿Preguntas?
 

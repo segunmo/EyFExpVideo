@@ -10,7 +10,7 @@
     box = ESC._box, svgAt = ESC._svgAt, title = ESC._title, ilus = ESC._ilus, cutLine = ESC._cut, kTicks = ESC._kt, tpl = ESC._tpl,
     MATRIZ = ESC._MATRIZ, GCOL = ESC._GCOL, GENS = ESC._GENS, solo = ESC._solo, at = ESC._at, sd = ESC._sd, mean = ESC._mean, P = ESC._P;
   const corte = C.config.corteComun;
-  const COL = { base: 'var(--c-base)', v2: 'var(--c-v2)', v21: 'var(--c-v21)', media: 'var(--c-media)', disp: 'var(--c-disp)', v1: 'var(--accent)' };
+  const COL = { base: 'var(--c-base)', v2: 'var(--c-v2)', v21: 'var(--c-v21)', media: 'var(--c-media)', disp: 'var(--c-disp)', v1: 'var(--c-rf109)' };   // v1 = híbrido RF-109 + LR: mismo color que en los gráficos de desarrollo
 
   /* ---------------------------------------------------------------- 04 · variante 2 */
   ESC.v2 = root => {
@@ -129,13 +129,6 @@
       root.appendChild(h('div', { cls: 'abs card', style: box(x, y, 844, 310), anim: [i < 2 ? 0 : 1, 'up', 0.15 + (i % 2) * 0.25] },
         `<span class="num">0${i + 1}</span><h3>${c.t}</h3><p>${tpl(c.d, { sdBase: F.M(sdBase) })}</p>`));
     });
-  };
-  ESC.limit2 = root => {
-    const t = T.limit2; title(root, t);
-    root.appendChild(h('div', { cls: 'abs card', style: box(96, 270, 780, 640), anim: [0, 'up', 0.1] }, `<span class="num">01</span><h3>${t.v1T}</h3>` + t.v1.map(x => `<p style="margin:14px 0">· ${x}</p>`).join('')));
-    const met = D.baselineMetricas.filas, ne = mean(met.map(r => r.ne)), cal = mean(met.map(r => r.calibracion));
-    root.appendChild(h('div', { cls: 'abs card', style: box(916, 270, 908, 640), anim: [0, 'up', 0.35] }, `<span class="num">02</span><h3>${t.dT}</h3>` + t.d.map(x => `<p style="margin:8px 0;font-size:24px">· ${x}</p>`).join('') +
-      `<p style="margin-top:22px;font-size:24px;color:var(--ink)">${t.calib}</p><div style="display:flex;gap:56px;margin-top:10px"><div><div class="mono" style="font-size:52px;font-weight:700;color:var(--ink)">${F.d2(ne)}</div><div class="small">${t.calibNE}</div></div><div><div class="mono" style="font-size:52px;font-weight:700;color:var(--ink)">${F.x1(cal)}</div><div class="small">${t.calibC}</div></div></div>`));
   };
 
   /* ---------------------------------------------------------------- 06 · matriz */
@@ -308,26 +301,56 @@
   };
   ESC.v1final = root => {
     const t = T.v1final; title(root, t);
-    if (!D.v1Final) {
+    const V = D.v1Final;
+    if (!V || !V.brazos) {
       root.appendChild(h('div', { cls: 'abs pend-box', style: box(96, 290, 1728, 560), anim: [0, 'fade', 0.2] },
         `<div><span class="pend-chip" data-pendiente="1">${t.pend}</span><p style="font-size:28px;color:var(--ink2);margin-top:28px;max-width:1100px">${t.pendD}</p></div>`));
       return;
     }
-    const bc = D.baseline.curva, vf = D.v1Final.curva;
-    const p = curvasPanel(root, { x: 96, y: 290, w: 1728, h: 580, xd: [0, 15000], yd: [0, 320e6], xt: kTicks(0, 15000, 2500), yt: kTicks(0, 300e6, 50e6), b: 0, yl: UI.gananciaMedia, cutLabel: F.int(corte),
-      series: [{ k: 'base', ...serieM(bc), c: COL.base }, { k: 'v1', ...serieM(vf), c: COL.v1 }] });
-    legend(root, 96, 912, [{ t: 'Baseline', c: COL.base }, { t: t.serie, c: COL.v1 }], [0, 'fade', 0.2]);
-    const g = at(vf.envios, vf.promedio, corte);
-    root.appendChild(h('div', { cls: 'abs mono', style: box(1100, 912, 724) + 'text-align:right;font-size:26px;color:var(--ink)', anim: [0, 'fade', 1.5], 'data-val': g, 'data-campo': 'v1final.g' }, `Ĝ(${F.int(corte)}) = ${F.M(g)}`));
+    const A = V.brazos.A, B = V.brazos.B, bc = D.baseline.curva;
+    const S = [
+      { k: 'base', ...serieM(bc), c: COL.base, label: t.series.base },
+      { k: 'hib', ...serieM(A.hibrido), c: COL.v1, label: t.series.hib },
+      { k: 'solo', ...serieM(A.solo), c: 'var(--c-rf109)', label: t.series.solo, dash: '12 8', hueco: true }
+    ];
+    // izquierda: zoom de las curvas medias
+    curvasPanel(root, { x: 96, y: 270, w: 900, h: 600, xd: [2000, 6000], yd: [240e6, 300e6], xt: kTicks(2000, 6000, 1000), yt: kTicks(240e6, 300e6, 10e6), series: S, b: 0, yl: UI.gananciaMedia, tt: t.curvas, dots: true, cutLabel: F.int(corte) });
+    legend(root, 96, 912, S.map(sr => ({ t: sr.label, c: sr.c, dash: !!sr.dash })), [0, 'fade', 0.2]);
+    // derecha: las 6 semillas al corte
+    const p = plot(root, { x: 1080, y: 270, w: 744, h: 540, xd: [0, 3], yd: [255e6, 300e6], xt: [], yt: kTicks(260e6, 300e6, 10e6), yf: F.m0, yl: tpl(t.ejeS, { corte: F.int(corte) }), tt: tpl(t.semillas, { corte: F.int(corte) }), anim: [0, 'fade', 0.2] });
+    const i4 = bc.envios.indexOf(corte), baseSem = bc.semillas;
+    S.forEach((sr, g) => {
+      const cur = sr.k === 'base' ? bc : sr.k === 'hib' ? A.hibrido : A.solo;
+      const vals = Object.values(cur.semillas).map(a => a[cur.envios.indexOf(corte)]), cx = p.X(g + 0.5), m = mean(vals);
+      p.svg.appendChild(s('text', { cls: 'tick', x: cx, y: p.y0 + 34, 'text-anchor': 'middle', anim: [0, 'fade', 0.3] }, sr.label));
+      vals.forEach((v, k) => p.svg.appendChild(s('circle', { cx: cx - 50 + k * 20, cy: p.Y(v), r: 9, fill: sr.hueco ? 'var(--bg)' : sr.c, stroke: sr.hueco ? sr.c : 'var(--bg)', 'stroke-width': 2.5, anim: [0, 'drop', 1.0 + g * 0.25 + k * 0.05] })));
+      p.svg.appendChild(s('line', { x1: cx - 72, x2: cx + 72, y1: p.Y(m), y2: p.Y(m), stroke: 'var(--ink)', 'stroke-width': 3, anim: [0, 'growx', 1.8 + g * 0.1, { origin: '50% 50%' }] }));
+      p.svg.appendChild(s('text', { cls: 'lblm', x: cx, y: p.Y(Math.max(...vals)) - 18, 'text-anchor': 'middle', fill: 'var(--ink)', anim: [0, 'fade', 1.9 + g * 0.1] }, F.m1(m)));
+    });
+    const hibSem = Object.values(A.hibrido.semillas).map(a => a[A.hibrido.envios.indexOf(corte)]);
+    const bajo = Object.keys(A.hibrido.semillas).filter(k => A.hibrido.semillas[k][A.hibrido.envios.indexOf(corte)] < (baseSem[k] || [])[i4]).length;
+    root.appendChild(h('div', { cls: 'abs pill acc', style: box(1176, 834) + 'font-size:24px', anim: [0, 'up', 2.2], 'data-campo': 'v1final.bajo', 'data-val': bajo }, tpl(t.bajo, { n: bajo })));
+    const g = at(A.hibrido.envios, A.hibrido.promedio, corte);
+    root.appendChild(h('div', { cls: 'abs small', style: box(1080, 912, 744) + 'text-align:right;font-size:22px', anim: [0, 'fade', 2.4], 'data-val': g, 'data-campo': 'v1final.g' },
+      tpl(t.control, { hibB: F.m1(at(B.hibrido.envios, B.hibrido.promedio, corte)) + ' M', soloB: F.m1(at(B.solo.envios, B.solo.promedio, corte)) + ' M' })));
   };
 
   /* ---------------------------------------------------------------- 07 · discusión */
+  // Cifras de la variante 1 en 201910 para los textos (todo desde DATOS; '—' si falta el final)
+  function valsV1() {
+    const V = D.v1Final, M = MATRIZ;
+    if (!V || !V.brazos) return { dv1: UI.pendienteCorta, solo: '—', hib: '—', mejora: '—', calA: '—', calB: '—' };
+    const A = V.brazos.A, gh = at(A.hibrido.envios, A.hibrido.promedio, corte), gs = at(A.solo.envios, A.solo.promedio, corte);
+    const cal = V.metricas.filter(r => r.brazo === 'A' && r.modelo === 'hibrido').map(r => r.calibracion);
+    const calB = mean(D.baselineMetricas.filas.map(r => r.calibracion));
+    return { dv1: F.pct(M.v1.p), solo: F.m1(gs) + ' M', hib: F.m1(gh) + ' M', mejora: F.pct(100 * (gh - gs) / gs), calA: F.d2(mean(cal)), calB: F.d2(calB) };
+  }
+
   ESC.disc = root => {
     const t = T.disc; title(root, t);
     const M = MATRIZ, bd = D.baselineDev;
     const mejores = [].concat(...['separado', 'mismos'].map(r => GENS.map(g => ESC.mejorC(r, g))));
-    const vals = { dv2: F.pct(M.v2.p), dv21: F.pct(M.v21.p), dmedia: F.pct(M.media.p), ddisp: F.pct(M.disp.p),
-      mejorV1: F.m1(Math.max(...mejores.map(r => r.gananciaMax))) + ' M', baseDev: F.m1(Math.max(...bd.ganancia)) + ' M' };
+    const vals = Object.assign({ dv2: F.pct(M.v2.p), dv21: F.pct(M.v21.p), dmedia: F.pct(M.media.p), ddisp: F.pct(M.disp.p) }, valsV1());
     const beats = [0, 0, 1, 2];
     t.items.forEach((it, i) => root.appendChild(h('div', { cls: 'abs', style: box(96, 262 + i * 170, 1728, 156) + 'display:grid;grid-template-columns:400px 1fr;gap:40px;border-top:1px solid var(--line);padding-top:18px', anim: [beats[i], 'up', 0.15 + (i % 2) * 0.25] },
       `<div style="font-size:30px;font-weight:700"><span class="hl mono" style="font-size:22px;display:block">0${i + 1}</span>${it.t}</div><div style="font-size:25px;line-height:1.42;color:var(--ink2)">${tpl(it.d, vals)}</div>`)));
@@ -336,7 +359,7 @@
   /* ---------------------------------------------------------------- 08 · conclusiones */
   ESC.concl = root => {
     const t = T.concl; title(root, t);
-    t.items.forEach((it, i) => root.appendChild(h('div', { cls: 'abs', style: box(96, 280 + i * 100, 1728) + 'font-size:32px;line-height:1.35;display:flex;gap:24px', anim: [0, 'up', 0.15 + i * 0.2] }, `<span class="hl mono" style="font-size:26px;padding-top:4px">0${i + 1}</span><span>${it}</span>`)));
+    t.items.forEach((it, i) => root.appendChild(h('div', { cls: 'abs', style: box(96, 280 + i * 100, 1728) + 'font-size:32px;line-height:1.35;display:flex;gap:24px', anim: [0, 'up', 0.15 + i * 0.2] }, `<span class="hl mono" style="font-size:26px;padding-top:4px">0${i + 1}</span><span>${tpl(it, valsV1())}</span>`)));
     root.appendChild(h('div', { cls: 'abs card', style: box(96, 720, 1728) + 'border-left:6px solid var(--accent);padding:26px 36px', anim: [1, 'up', 0.1] }, `<span class="num">H0</span><p style="font-size:30px;color:var(--ink)">${t.h0}</p>`));
   };
 
