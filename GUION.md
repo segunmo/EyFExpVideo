@@ -2,7 +2,7 @@
 
 > Generado desde `content.js` con `node scripts/generar_guion.js`. **No editar a mano:** los cambios se hacen en `content.js` y se regenera.
 
-- 61 pasos (0 a 60). Narración sugerida: 1594 palabras ≈ 11 min a 140 palabras por minuto, más las pausas de las animaciones.
+- 59 pasos (0 a 58). Narración sugerida: 1566 palabras ≈ 11 min a 140 palabras por minuto, más las pausas de las animaciones.
 - Para grabar una sección: `G` + número del primer paso + `Enter`, y avanzar con `→`.
 - Los textos marcados **BORRADOR** son propuestas para que el equipo los reescriba.
 - Presentador: completar `presentadores` en `content.js`.
@@ -15,12 +15,12 @@
 | 03 · Sesgos | 8–9 | — |
 | 04 · Diseño experimental | 10–35 | — |
 | 05 · Limitaciones | 36–37 | — |
-| 06 · Resultados | 38–50 | — |
-| 07 · Discusión | 51–53 | — |
-| 08 · Conclusiones | 54–55 | — |
-| 09 · Trabajo futuro | 56–56 | — |
-| 10 · Anexo | 57–59 | — |
-| Cierre | 60–60 | — |
+| 06 · Resultados | 38–48 | — |
+| 07 · Discusión | 49–51 | — |
+| 08 · Conclusiones | 52–53 | — |
+| 09 · Trabajo futuro | 54–54 | — |
+| 10 · Anexo | 55–57 | — |
+| Cierre | 58–58 | — |
 
 ## Portada
 
@@ -374,23 +374,15 @@
 
 *Datos:* transcripto: importancia (pág. 24)
 
-### Paso 46 · `v1-auc-separado` — Variante 1: AUC vs. C (separado)
+### Paso 46 · `v1-auc` — Variante 1: AUC vs. C
 
-**En pantalla:** AUC en 201908 según C para los 4 generadores (separado); punteado = generador solo; rayado = baseline 0,9313.
+**En pantalla:** AUC en 201908 según C para los 4 generadores, en los dos repartos (separado y mismos); punteado = generador solo; rayado = baseline 0,9313.
 
-**Narración sugerida:** Ahora la variante uno, en desarrollo. El AUC en agosto forma una U invertida según C: con poca regularización, la logística sobreajusta.
-
-*Datos:* exacto: desarrollo_metricas.csv
-
-### Paso 47 · `v1-auc-mismos` — Variante 1: AUC vs. C (mismos)
-
-**En pantalla:** Segundo panel: reparto mismos.
-
-**Narración sugerida:** Con el reparto mismos, los RF mejoran. Ningún híbrido llega a la línea del baseline.
+**Narración sugerida:** Ahora la variante uno, en desarrollo. El AUC en agosto forma una U invertida según C: con poca regularización, la logística sobreajusta. Con el reparto mismos los RF mejoran, pero ningún híbrido llega a la línea del baseline.
 
 *Datos:* exacto: desarrollo_metricas.csv
 
-### Paso 48 · `v1-ganancia` — Variante 1: ganancia en desarrollo
+### Paso 47 · `v1-ganancia` — Variante 1: ganancia en desarrollo
 
 **En pantalla:** Curvas de ganancia en 201908 con el mejor C por generador (dos repartos) contra la curva de desarrollo del baseline.
 
@@ -398,15 +390,7 @@
 
 *Datos:* exacto: desarrollo_curvas.csv · transcripto: curva 201908 del baseline
 
-### Paso 49 · `v1-calibracion` — Variante 1: calibración
-
-**En pantalla:** Recuadro: NE y calibración del híbrido (201908) vs. del baseline (201910), como propiedad.
-
-**Narración sugerida:** Donde el híbrido sí se destaca es en la calibración, que es la fortaleza del paper. Pero son meses distintos y nuestra métrica es la ganancia en la punta.
-
-*Datos:* exacto: métricas v1 y baseline
-
-### Paso 50 · `v1-final` — Variante 1: final en 201910
+### Paso 48 · `v1-final` — Variante 1: final en 201910
 
 **En pantalla:** Zoom 2.000–6.000 de las curvas en 201910 (baseline, RF-109 + logística, RF-109 solo) y las 6 semillas a 4.000; abajo, el control con LGBM-12.
 
@@ -416,7 +400,7 @@
 
 ## 07 · Discusión
 
-### Paso 51 · `discusion-1` — Discusión: perfiles y probabilidades
+### Paso 49 · `discusion-1` — Discusión: perfiles y probabilidades
 
 **En pantalla:** Puntos 1 y 2 de la discusión (borrador).
 
@@ -424,7 +408,7 @@
 
 *Datos:* exacto/transcripto: Δ de la matriz
 
-### Paso 52 · `discusion-2` — Discusión: variante 1
+### Paso 50 · `discusion-2` — Discusión: variante 1
 
 **En pantalla:** Punto 3 (borrador): árboles + logística en 201910.
 
@@ -432,7 +416,7 @@
 
 *Datos:* exacto: final v1
 
-### Paso 53 · `discusion-3` — Discusión: atribución
+### Paso 51 · `discusion-3` — Discusión: atribución
 
 **En pantalla:** Punto 4 (borrador): la pregunta del tutor y los controles que faltan.
 
@@ -440,13 +424,13 @@
 
 ## 08 · Conclusiones
 
-### Paso 54 · `conclusiones` — Conclusiones (borrador)
+### Paso 52 · `conclusiones` — Conclusiones (borrador)
 
 **En pantalla:** Cuatro conclusiones cortas (borrador).
 
 **Narración sugerida:** BORRADOR: tenemos evidencia parcial. Hay una mejora chica para perfiles en el corte común, dentro del ruido; árboles más logística queda abajo, y no hay un ganador entre los tres enfoques.
 
-### Paso 55 · `conclusiones-h0` — Qué decimos de H0 (borrador)
+### Paso 53 · `conclusiones-h0` — Qué decimos de H0 (borrador)
 
 **En pantalla:** Recuadro sobre H0.
 
@@ -454,7 +438,7 @@
 
 ## 09 · Trabajo futuro
 
-### Paso 56 · `futuro` — Trabajo futuro
+### Paso 54 · `futuro` — Trabajo futuro
 
 **En pantalla:** Siete líneas de trabajo futuro, con los dos controles destacados.
 
@@ -462,7 +446,7 @@
 
 ## 10 · Anexo
 
-### Paso 57 · `anexo-repro` — Anexo: reproducibilidad
+### Paso 55 · `anexo-repro` — Anexo: reproducibilidad
 
 **En pantalla:** Semillas, huellas, determinismo y procedencia de los números.
 
@@ -470,7 +454,7 @@
 
 *Datos:* exacto: manifiesto baseline
 
-### Paso 58 · `anexo-corte` — Anexo: el corte
+### Paso 56 · `anexo-corte` — Anexo: el corte
 
 **En pantalla:** Curva del baseline con 4.000 y 4.500 marcados y las tres políticas de corte del equipo.
 
@@ -478,7 +462,7 @@
 
 *Datos:* exacto: curva baseline
 
-### Paso 59 · `anexo-desvios` — Anexo: desvíos D1–D8
+### Paso 57 · `anexo-desvios` — Anexo: desvíos D1–D8
 
 **En pantalla:** Tabla de desvíos del baseline del equipo respecto de las notas de la cátedra.
 
@@ -486,7 +470,7 @@
 
 ## Cierre
 
-### Paso 60 · `cierre` — Cierre
+### Paso 58 · `cierre` — Cierre
 
 **En pantalla:** Gracias / ¿Preguntas?
 

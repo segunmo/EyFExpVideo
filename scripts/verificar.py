@@ -101,8 +101,6 @@ textos_esperados = {  # paso id → textos que tienen que aparecer
                     pct(100 * (v1_hib - v1_solo) / v1_solo), es(cal_v1, 2), es(cal_base, 2)],
     "conclusiones": [pct(100 * (v1_hib - base) / base)],
     "v1-ganancia": [es(mejor_v1 / 1e6, 1) + " M", es(dev_max / 1e6, 1) + " M"],
-    "v1-calibracion": ["NE " + es(min(float(r["ne"]) for r in mejores), 2) + "–" + es(max(float(r["ne"]) for r in mejores), 2),
-                       "calib. " + es(min(float(r["calibracion"]) for r in mejores), 2) + "–" + es(max(float(r["calibracion"]) for r in mejores), 2)],
     "discusion-1": [pct(100 * (esperado[k] - base) / base) for k in ("v2", "v21", "media", "disp")],
     "ganancia-curva": [M(max(float(r["promedio"]) for r in leer("baseline_curvas_ganancia.csv") if r["foto_mes"] == "201910"))],
     "eval-semillas": [M(base)],

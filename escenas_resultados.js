@@ -251,30 +251,30 @@
   };
 
   /* ---------------------------------------------------------------- 06 · variante 1 (desarrollo) */
-  function aucPanel(root, rep, x, b, tt) {
+  function aucPanel(root, rep, x, b, tt, o = 0) {   // o: demora extra (segundo panel)
     const t = T.v1auc;
-    const p = plot(root, { x, y: 300, w: 840, h: 560, xlog: true, xd: [1e-4, 1], yd: [0.80, 0.94], xt: [1e-4, 1e-3, 1e-2, 1e-1, 1], yt: [0.80, 0.82, 0.84, 0.86, 0.88, 0.90, 0.92, 0.94], xf: v => String(v).replace('.', ','), yf: F.d2, xl: t.ejeX, yl: b === 0 ? t.ejeY : null, tt, anim: [b, 'fade', 0] });
+    const p = plot(root, { x, y: 300, w: 840, h: 560, xlog: true, xd: [1e-4, 1], yd: [0.80, 0.94], xt: [1e-4, 1e-3, 1e-2, 1e-1, 1], yt: [0.80, 0.82, 0.84, 0.86, 0.88, 0.90, 0.92, 0.94], xf: v => String(v).replace('.', ','), yf: F.d2, xl: t.ejeX, yl: o === 0 ? t.ejeY : null, tt, anim: [b, 'fade', o + 0] });
     const yb = D.baselineDev.auc;
-    p.svg.appendChild(s('line', { x1: p.x0, x2: p.x1, y1: p.Y(yb), y2: p.Y(yb), stroke: 'var(--c-base)', 'stroke-width': 3, 'stroke-dasharray': '12 8', anim: [b, 'draw', 0.2] }));
+    p.svg.appendChild(s('line', { x1: p.x0, x2: p.x1, y1: p.Y(yb), y2: p.Y(yb), stroke: 'var(--c-base)', 'stroke-width': 3, 'stroke-dasharray': '12 8', anim: [b, 'draw', o + 0.2] }));
     GENS.forEach((g, k) => {
       const rows = D.v1Dev.metricas.filter(r => r.reparto === rep && r.generador === g && r.C != null).sort((a, z) => a.C - z.C);
       const so = solo(rep, g);
-      p.svg.appendChild(s('line', { x1: p.x0, x2: p.x1, y1: p.Y(so.auc), y2: p.Y(so.auc), stroke: GCOL[g], 'stroke-width': 2, 'stroke-dasharray': '2 7', 'stroke-linecap': 'round', opacity: 0.9, anim: [b, 'draw', 0.3 + k * 0.1] }));
-      line(p, rows.map(r => r.C), rows.map(r => r.auc), GCOL[g], [b, 'draw', 0.5 + k * 0.25, { dur: 1.0 }], { 'stroke-width': 3.5 });
-      rows.forEach(r => p.svg.appendChild(s('circle', { cx: p.X(r.C), cy: p.Y(r.auc), r: 5.5, fill: GCOL[g], anim: [b, 'fade', 1.3 + k * 0.1] })));
+      p.svg.appendChild(s('line', { x1: p.x0, x2: p.x1, y1: p.Y(so.auc), y2: p.Y(so.auc), stroke: GCOL[g], 'stroke-width': 2, 'stroke-dasharray': '2 7', 'stroke-linecap': 'round', opacity: 0.9, anim: [b, 'draw', o + 0.3 + k * 0.1] }));
+      line(p, rows.map(r => r.C), rows.map(r => r.auc), GCOL[g], [b, 'draw', o + 0.5 + k * 0.25, { dur: 1.0 }], { 'stroke-width': 3.5 });
+      rows.forEach(r => p.svg.appendChild(s('circle', { cx: p.X(r.C), cy: p.Y(r.auc), r: 5.5, fill: GCOL[g], anim: [b, 'fade', o + 1.3 + k * 0.1] })));
       const best = ESC.mejorC(rep, g);
-      p.svg.appendChild(s('circle', { cx: p.X(best.C), cy: p.Y(best.auc), r: 10, fill: 'none', stroke: GCOL[g], 'stroke-width': 3, anim: [b, 'pop', 1.8 + k * 0.1] }));
+      p.svg.appendChild(s('circle', { cx: p.X(best.C), cy: p.Y(best.auc), r: 10, fill: 'none', stroke: GCOL[g], 'stroke-width': 3, anim: [b, 'pop', o + 1.8 + k * 0.1] }));
     });
-    p.svg.appendChild(s('text', { cls: 'tick', x: p.x1 - 6, y: p.Y(yb) - 12, 'text-anchor': 'end', fill: 'var(--ink2)', anim: [b, 'fade', 0.4] }, t.base));
+    p.svg.appendChild(s('text', { cls: 'tick', x: p.x1 - 6, y: p.Y(yb) - 12, 'text-anchor': 'end', fill: 'var(--ink2)', anim: [b, 'fade', o + 0.4] }, t.base));
     return p;
   }
   ESC.v1auc = root => {
     const t = T.v1auc; title(root, t);
     aucPanel(root, 'separado', 96, 0, t.separado);
-    aucPanel(root, 'mismos', 984, 1, t.mismos);
+    aucPanel(root, 'mismos', 984, 0, t.mismos, 0.6);
     legend(root, 96, 905, GENS.map(g => ({ t: g + ' + LR', c: GCOL[g] })).concat([{ t: t.solo.replace('punteado: ', ''), c: '#9AA3AE', dash: true }]), [0, 'fade', 0.2]);
     root.appendChild(h('div', { cls: 'abs small', style: box(96, 228, 1728) + 'font-size:24px;color:#F4C46A', anim: [0, 'fade', 0.2] }, '● ' + t.pend));
-    root.appendChild(h('div', { cls: 'abs small', style: box(984, 228, 840) + 'text-align:right;font-size:22px', anim: [1, 'fade', 2.0] }, '○ mejor C por AUC · ' + t.u));
+    root.appendChild(h('div', { cls: 'abs small', style: box(984, 228, 840) + 'text-align:right;font-size:22px', anim: [0, 'fade', 2.4] }, '○ mejor C por AUC · ' + t.u));
   };
   ESC.v1gan = root => {
     const t = T.v1gan, ta = T.v1auc; title(root, t);
@@ -289,15 +289,8 @@
     });
     const mejores = [].concat(...['separado', 'mismos'].map(r => GENS.map(g => ESC.mejorC(r, g))));
     const bestGain = Math.max(...mejores.map(r => r.gananciaMax));
-    legend(root, 96, 820, GENS.map(g => ({ t: `${g} + LR`, c: GCOL[g] })).concat([{ t: t.base, c: '#9AA3AE', dash: true }]), [0, 'fade', 0.3, { out: 1 }]);
-    root.appendChild(h('div', { cls: 'abs small', style: box(96, 870, 1728) + 'font-size:24px', anim: [0, 'fade', 1.6, { out: 1 }] }, `Con el mejor C por AUC, el máximo más alto de un híbrido es ${F.m1(bestGain)} M, contra ${F.m1(Math.max(...bd.ganancia))} M del baseline en desarrollo.`));
-    // calibración (beat 1)
-    const neH = mejores.map(r => r.ne), caH = mejores.map(r => r.calibracion), met = D.baselineMetricas.filas;
-    const neB = mean(met.map(r => r.ne)), caB = mean(met.map(r => r.calibracion));
-    root.appendChild(h('div', { cls: 'abs card', style: box(96, 800, 1728, 150) + 'display:grid;grid-template-columns:380px 380px 1fr;gap:36px;align-items:center;padding:18px 32px', anim: [1, 'up', 0.1] },
-      `<div><div class="small" style="font-size:22px">${t.calHib}</div><div class="mono" style="font-size:32px;font-weight:700;color:var(--ink)">NE ${F.d2(Math.min(...neH))}–${F.d2(Math.max(...neH))}</div><div class="mono" style="font-size:26px;color:var(--ink2)">calib. ${F.d2(Math.min(...caH))}–${F.d2(Math.max(...caH))}</div></div>
-       <div><div class="small" style="font-size:22px">${t.calBase}</div><div class="mono" style="font-size:32px;font-weight:700;color:var(--ink)">NE ${F.d2(neB)}</div><div class="mono" style="font-size:26px;color:var(--ink2)">calib. ${F.x1(caB)}</div></div>
-       <div style="font-size:22px;color:var(--ink2);line-height:1.35"><b style="color:var(--ink)">${t.calK}.</b> ${t.calNota}</div>`));
+    legend(root, 96, 820, GENS.map(g => ({ t: `${g} + LR`, c: GCOL[g] })).concat([{ t: t.base, c: '#9AA3AE', dash: true }]), [0, 'fade', 0.3]);
+    root.appendChild(h('div', { cls: 'abs small', style: box(96, 870, 1728) + 'font-size:24px', anim: [0, 'fade', 1.6] }, `Con el mejor C por AUC, el máximo más alto de un híbrido es ${F.m1(bestGain)} M, contra ${F.m1(Math.max(...bd.ganancia))} M del baseline en desarrollo.`));
   };
   ESC.v1final = root => {
     const t = T.v1final; title(root, t);
