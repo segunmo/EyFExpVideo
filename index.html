@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Random Forest Features</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="rec">
+  <div id="viewport">
+    <div id="stage">
+      <!-- Fondo -->
+      <div id="bg" aria-hidden="true"></div>
+
+      <!-- Encabezado fijo -->
+      <header id="chrome-top">
+        <div class="brand"><span class="mono">DMEyF 2026</span><span class="sep">/</span><span>Random Forest Features</span></div>
+        <div id="sec-label" class="mono"></div>
+      </header>
+
+      <!-- Escenas (una por diapositiva; las construye escenas.js) -->
+      <main id="slides"></main>
+
+      <!-- Barra de secciones -->
+      <nav id="secbar" aria-hidden="true"></nav>
+    </div>
+
+    <!-- Fuera del escenario: solo en modo desarrollo -->
+    <aside id="hud" aria-hidden="true"></aside>
+    <div id="goto" hidden></div>
+  </div>
+
+  <script src="vendor/gsap-3.12.5.min.js"></script>
+  <script src="content.js"></script>
+  <script src="data/datos.js"></script>
+  <script src="escenas.js"></script>
+  <script src="escenas_resultados.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
