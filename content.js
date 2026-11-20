@@ -206,7 +206,7 @@ window.CONTENIDO = {
       kicker: 'Variante 1 · cómo se reparten los meses',
       titulo: 'Dos repartos y un dial de regularización',
       separado: 'separado', separadoD: 'generador 03–05, logística en 06 (≈ 1.250 bajas, sin reuso de filas)',
-      mismos: 'mismos', mismosD: 'generador y logística con 03–06 (≈ 5.000 bajas, reusa el train)',
+      mismos: 'mismos', mismosD: 'generador y logística con 03–06 (≈ 5.300 bajas, reusa el train)',
       eval: 'AUC y ganancia en 201908', gen: 'generador', lr: 'logística',
       cK: 'C de la logística (L2)', cD: 'más chico = más regularización',
       genK: 'Generadores', gens: [

@@ -145,7 +145,8 @@
     const x0 = 96, y0 = 300, rh = 92, cx = [x0, x0 + 640, x0 + 940, x0 + 1150];
     t.cols.forEach((c, j) => root.appendChild(h('div', { cls: 'abs', style: box(cx[j], y0, j ? 200 : 600) + `font-size:22px;color:var(--muted);${j ? 'text-align:right' : ''}`, anim: [j < 2 ? 0 : 1, 'fade', 0.2] }, c)));
     // eje de barras divergentes
-    const bx0 = 1480, bw = 340, zero = bx0 + bw / 2, maxAbs = 2.0, pxPct = (bw / 2) / maxAbs;
+    const bx0 = 1480, bw = 340, zero = bx0 + bw / 2;
+    const maxAbs = Math.max(2.0, ...Object.values(MATRIZ).filter(r => r.p != null).map(r => Math.abs(r.p) * 1.1)), pxPct = (bw / 2) / maxAbs;
     root.appendChild(h('div', { cls: 'abs', style: box(zero - 1, y0 + 40, 2, rh * t.filas.length) + 'background:#4A525E', anim: [1, 'fade', 0.1] }));
     root.appendChild(h('div', { cls: 'abs mono', style: box(zero - 40, y0, 80) + 'font-size:22px;color:var(--muted);text-align:center', anim: [1, 'fade', 0.1] }, '0 %'));
     t.filas.forEach((f, i) => {
