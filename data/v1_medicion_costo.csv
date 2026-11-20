@@ -1,0 +1,7 @@
+etapa,segundos,rss_actual_gb,rss_pico_gb,filas,columnas,x_gb,hojas_total,hojas_media,hojas_min,hojas_max,rf_pickle_mb,no_nulos,sparse_gb,C,iteraciones,convergio
+leer RF 201903-05,8.2,3.13,4.98,378501.0,762.0,1.07,,,,,,,,,,
+ajustar RF,176.7,3.56,4.98,,,,32704.0,109.0,46.0,205.0,5.0,,,,,
+leer 201906 + hojas,6.0,2.42,4.98,128370.0,,,,,,,,,,,,
+one-hot 201906,1.5,3.4,4.98,,27784.0,,,,,,,38511000.0,0.43,,,
+ajustar LR,3.6,3.41,4.98,,,,,,,,,,,1.0,34.0,True
+predecir 201908 (RF solo + híbrido),9.9,4.49,4.98,,,,,,,,,,,,,

@@ -1,0 +1,5 @@
+experimento,descripcion,ganancia_prom5,delta_vs_b001,gana_de_5
+b001,baseline (5 semillas),284.94,,
+x001,+ prob. RF,287.39,3.14,5
+x002,+ dispersión,285.68,2.94,4
+x003,embedding sin target (control),288.82,3.43,4
