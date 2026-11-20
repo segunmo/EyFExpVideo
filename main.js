@@ -22,6 +22,8 @@
   const $ = (s, r = document) => r.querySelector(s);
   const stage = $('#stage'), slidesEl = $('#slides'), hud = $('#hud'), gotoEl = $('#goto');
   const DIM = 0.22;
+  const SPEED = 1.5;      // las transiciones corren 1,5× más rápido que las demoras/duraciones escritas en escenas
+  const OUT = 0.3;        // dentro de una diapositiva: lo que se va se desvanece primero (0,3 s), después entra lo nuevo
 
   /* ------------------------------------------------------------ Chrome */
   const secbar = $('#secbar');
@@ -140,34 +142,44 @@
     if (A.escena !== B.escena) {
       // salida de la diapositiva anterior, entrada de la nueva
       const sA = built[A.escena];
-      t.to(sA.root, { opacity: 0, duration: 0.35, ease: 'power1.in' }, 0);
+      t.to(sA.root, { opacity: 0, duration: 0.25, ease: 'power1.in' }, 0);
       t.add(() => {
         stage.classList.add('instant');
         sA.root.classList.remove('show'); gsap.set(sA.root, { clearProps: 'opacity' });
         sB.root.classList.add('show'); curSlide = B.escena;
         // estado previo: lo que ya estaba visible antes del beat de llegada
         sB.els.forEach(e => {
-          if (vis(e, B.beat) && e._b < B.beat) applyEl(e, B.beat); else { gsap.killTweensOf(e); gsap.set(e, { opacity: 0, visibility: 'hidden' }); applyClasses(e, B.beat - 1); }
+          if (vis(e, B.beat) && e._b < B.beat) applyEl(e, B.beat);
+          else {
+            // OJO: no usar killTweensOf acá, mataría las animaciones de entrada que ya están en esta línea de tiempo
+            if (e._b !== B.beat) gsap.killTweensOf(e);
+            gsap.set(e, { opacity: 0, visibility: 'hidden' }); applyClasses(e, B.beat - 1);
+          }
         });
         void stage.offsetWidth; stage.classList.remove('instant');
         setChrome(to);
-      }, 0.36);
-      t0 = 0.4;
+      }, 0.26);
+      t0 = 0.28;
       sB.els.forEach(e => { if (e._b === B.beat) animIn(t, e, t0 + e._d, B.beat); });
       t.add(() => sB.els.forEach(e => applyClasses(e, B.beat)), t0 + 0.05);
     } else {
       setChrome(to);
       const pb = A.beat, nb = B.beat;
+      // Primero sale lo que deja de verse (todo junto, al principio del beat); lo que entra espera
+      // a que termine, para que el texto nuevo nunca aparezca encima de lo viejo.
+      const sale = sB.els.filter(e => vis(e, pb) && !vis(e, nb));
+      const t1 = sale.length ? OUT : 0;
+      sale.forEach(e => { t.to(e, { opacity: 0, duration: OUT, ease: 'power1.in' }, 0); t.set(e, { visibility: 'hidden' }, OUT); });
       sB.els.forEach(e => {
         const wasV = vis(e, pb), isV = vis(e, nb);
-        if (!wasV && isV) animIn(t, e, e._d, nb);
-        else if (wasV && !isV) { t.to(e, { opacity: 0, duration: 0.4, ease: 'power1.in' }, e._d); t.set(e, { visibility: 'hidden' }, e._d + 0.4); }
-        else if (isV && (e._dim <= nb) !== (e._dim <= pb)) t.to(e, { opacity: e._dim <= nb ? DIM : 1, duration: 0.5 }, e._d);
-        if (e._st.length) t.add(() => applyClasses(e, nb), e._d);
+        if (!wasV && isV) animIn(t, e, t1 + e._d, nb);
+        else if (isV && wasV && (e._dim <= nb) !== (e._dim <= pb)) t.to(e, { opacity: e._dim <= nb ? DIM : 1, duration: 0.4 }, 0);
+        if (e._st.length) t.add(() => applyClasses(e, nb), t1 + e._d);   // recorridos (árbol) usan la demora
       });
     }
     // duración mínima para que el onComplete no sea inmediato
     t.to({}, { duration: 0.01 }, Math.max(t.duration(), 0.05));
+    t.timeScale(SPEED);
     return t;
   }
 
