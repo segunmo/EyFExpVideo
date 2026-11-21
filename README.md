@@ -3,7 +3,7 @@
 Sitio por pasos que reemplaza al PowerPoint del experimento colaborativo (DMEyF 2026, Maestría en Data Mining, UBA). Se graba la pantalla mientras se narra y se avanza con el teclado.
 
 - Escenario fijo de **1920×1080** que se escala a la ventana (con bandas si no es 16:9).
-- **61 pasos** (0 a 60) en 10 secciones: 01 Hipótesis · 02 Bibliografía · 03 Sesgos · 04 Diseño · 05 Limitaciones · 06 Resultados · 07 Discusión · 08 Conclusiones · 09 Futuros · 10 Anexo.
+- **56 pasos** (0 a 55) en 10 secciones: 01 Hipótesis · 02 Bibliografía · 03 Sesgos · 04 Diseño · 05 Limitaciones · 06 Resultados · 07 Discusión · 08 Conclusiones · 09 Futuros · 10 Anexo.
 - HTML + CSS + JS, sin build. GSAP 3.12.5 y las tipografías (Inter, JetBrains Mono) están en `vendor/`: **funciona sin conexión**.
 
 ## Cómo abrirlo

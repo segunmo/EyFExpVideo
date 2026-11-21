@@ -165,7 +165,7 @@
   function curvasPanel(root, o) {
     // o: { x, y, w, h, xd, yd, xt, yt, series:[{k, xs, ys, c, label, w}], b, cut, tt, labels }
     const p = plot(root, { x: o.x, y: o.y, w: o.w, h: o.h, xd: o.xd, yd: o.yd, xt: o.xt, yt: o.yt, xf: F.int, yf: o.yf || F.m0, xl: UI.envios, yl: o.yl, tt: o.tt, anim: [o.b, 'fade', 0] });
-    cutLine(p, corte, [o.b, 'fade', 0.3], o.cutLabel);
+    (o.cuts || [{ k: corte, label: o.cutLabel }]).forEach(c => cutLine(p, c.k, [o.b, 'fade', 0.3], c.label));
     o.series.forEach((sr, k) => {
       const idx = sr.xs.map((x, i) => i).filter(i => sr.xs[i] >= o.xd[0] && sr.xs[i] <= o.xd[1]);
       line(p, idx.map(i => sr.xs[i]), idx.map(i => sr.ys[i]), sr.c, [o.b, 'draw', 0.3 + k * 0.35, { dur: 1.3 }], { 'stroke-width': sr.w || 3.5, 'stroke-dasharray': sr.dash || null });
@@ -175,9 +175,9 @@
   }
   const serieM = (curva) => ({ xs: curva.envios, ys: curva.promedio });
   // valores al corte, con desplazamientos fijos por serie para que no se pisen
-  function zoomLabels(root, S) {
+  function zoomLabels(root, S, porVersion = false) {
     const row = h('div', { cls: 'abs', style: box(1000, 912, 824) + 'display:flex;justify-content:flex-end;gap:28px;font-size:24px;color:var(--ink2)', anim: [1, 'fade', 1.6] });
-    row.innerHTML = `<span>a ${F.int(corte)}:</span>` + S.map(sr => `<span><i style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${sr.c};margin-right:8px"></i><b class="mono" style="color:var(--ink)">${F.m2(sr.ys[sr.xs.indexOf(corte)])}</b></span>`).join('');
+    row.innerHTML = `<span>${porVersion ? 'al corte:' : 'a ' + F.int(corte) + ':'}</span>` + S.map(sr => `<span><i style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${sr.c};margin-right:8px"></i><b class="mono" style="color:var(--ink)">${F.m2(sr.ys[sr.xs.indexOf(sr.corte || corte)])}</b></span>`).join('');
     root.appendChild(row);
   }
 
@@ -186,22 +186,23 @@
     const S = [
       { k: 'base', ...serieM(D.baseline.curva), c: COL.base, label: t.series.base },
       { k: 'v2', ...serieM(D.perfilesV2.curva), c: COL.v2, label: t.series.v2 },
-      { k: 'v21', ...serieM(D.perfilesV21.curva), c: COL.v21, label: t.series.v21 }
+      { k: 'v21', ...serieM(D.perfilesV21.curva), c: COL.v21, label: t.series.v21, corte: 4500 }
     ];
-    curvasPanel(root, { x: 96, y: 290, w: 820, h: 580, xd: [0, 15000], yd: [0, 320e6], xt: kTicks(0, 15000, 5000), yt: kTicks(0, 300e6, 50e6), series: S, b: 0, yl: UI.gananciaMedia, tt: t.full });
-    const pz = curvasPanel(root, { x: 1000, y: 290, w: 824, h: 580, xd: [2000, 6000], yd: [260e6, 296e6], xt: kTicks(2000, 6000, 1000), yt: kTicks(260e6, 295e6, 5e6), series: S, b: 1, yl: UI.gananciaMedia, tt: t.zoom, dots: true, cutLabel: F.int(corte) });
+    const cuts = [{ k: 4000 }, { k: 4500 }];
+    curvasPanel(root, { x: 96, y: 290, w: 820, h: 580, xd: [0, 15000], yd: [0, 320e6], xt: kTicks(0, 15000, 5000), yt: kTicks(0, 300e6, 50e6), series: S, cuts, b: 0, yl: UI.gananciaMedia, tt: t.full });
+    const pz = curvasPanel(root, { x: 1000, y: 290, w: 824, h: 580, xd: [2000, 6000], yd: [260e6, 296e6], xt: kTicks(2000, 6000, 1000), yt: kTicks(260e6, 295e6, 5e6), series: S, cuts, b: 1, yl: UI.gananciaMedia, tt: t.zoom, dots: true, cutLabel: F.int(corte) });
     const i4 = D.baseline.curva.envios.indexOf(corte);
-    zoomLabels(root, S);
+    zoomLabels(root, S, true);
     legend(root, 96, 912, S.map(sr => ({ t: sr.label, c: sr.c })), [0, 'fade', 0.2]);
-    root.appendChild(h('div', { cls: 'abs small', style: box(1000, 228, 824) + 'text-align:right;font-size:22px', anim: [1, 'fade', 1.8] }, t.nota + ' · perfiles transcriptos: deck págs. 16 y 18'));
+    root.appendChild(h('div', { cls: 'abs small', style: box(1000, 228, 824) + 'text-align:right;font-size:22px', anim: [1, 'fade', 1.8] }, t.nota));
   };
 
   ESC.perfSemillas = root => {
     const t = T.perfSemillas; title(root, t);
-    const gr = [['Baseline', D.baseline.curva, COL.base], ['v2 · HP fijos', D.perfilesV2.curva, COL.v2], ['v2.1 · reoptimizado', D.perfilesV21.curva, COL.v21]];
+    const gr = [['Baseline · 4.000', D.baseline.curva, COL.base, 4000], ['HP fijos · 4.000', D.perfilesV2.curva, COL.v2, 4000], ['Reopt. · 4.500', D.perfilesV21.curva, COL.v21, 4500]];
     const p = plot(root, { x: 96, y: 270, w: 1080, h: 640, xd: [0, 3], yd: [282e6, 298e6], xt: [], yt: kTicks(282e6, 298e6, 2e6), yf: F.m0, yl: t.eje, anim: [0, 'fade', 0] });
-    gr.forEach(([n, cur, c], g) => {
-      const i4 = cur.envios.indexOf(corte), vals = Object.values(cur.semillas).map(a => a[i4]), cx = p.X(g + 0.5), m = mean(vals);
+    gr.forEach(([n, cur, c, corteVersion], g) => {
+      const i4 = cur.envios.indexOf(corteVersion), vals = Object.values(cur.semillas).map(a => a[i4]), cx = p.X(g + 0.5), m = mean(vals);
       p.svg.appendChild(s('text', { cls: 'alab', x: cx, y: p.y0 + 40, 'text-anchor': 'middle', anim: [0, 'fade', 0.1] }, n));
       p.svg.appendChild(s('rect', { x: cx - 120, y: p.Y(Math.max(...vals)), width: 240, height: p.Y(Math.min(...vals)) - p.Y(Math.max(...vals)), fill: c, opacity: 0.10, rx: 6, anim: [0, 'growy', 1.6 + g * 0.1] }));
       // desempate horizontal para valores repetidos
@@ -215,7 +216,6 @@
     root.appendChild(h('div', { cls: 'abs card', style: box(1260, 300, 564, 560), anim: [0, 'up', 2.3] },
       `<span class="num">${t.fiK}</span><p style="font-size:28px;color:var(--ink);margin-top:10px">${tpl(t.fiV2, { n: n2 })}</p><p style="font-size:28px;color:var(--ink);margin-top:14px">${tpl(t.fiV21, { n: n21 })}</p>
        <p style="font-size:22px;margin-top:22px">${t.fiTop}</p><p class="mono" style="font-size:21px;color:#F4C46A;word-break:break-all">${I.perfiles_v2[0].variable}</p>`));
-    root.appendChild(h('div', { cls: 'abs small', style: box(1260, 880, 564) + 'font-size:22px', anim: [0, 'fade', 2.5] }, 'Baseline: CSV exacto · perfiles: deck págs. 16, 17, 18 y 19'));
   };
 
   ESC.probCurvas = root => {
@@ -230,7 +230,6 @@
     const pz = curvasPanel(root, { x: 1000, y: 290, w: 824, h: 580, xd: [2000, 6000], yd: [260e6, 296e6], xt: kTicks(2000, 6000, 1000), yt: kTicks(260e6, 295e6, 5e6), series: S, b: 1, yl: UI.gananciaMedia, tt: t.zoom, dots: true, cutLabel: F.int(corte) });
     zoomLabels(root, S);
     legend(root, 96, 912, S.map(sr => ({ t: sr.label, c: sr.c })), [0, 'fade', 0.2]);
-    root.appendChild(h('div', { cls: 'abs small', style: box(1000, 228, 824) + 'text-align:right;font-size:22px', anim: [1, 'fade', 1.8] }, 'Prob RF transcripto: deck pág. 21'));
   };
 
   ESC.probImp = root => {
@@ -344,7 +343,7 @@
     const M = MATRIZ, bd = D.baselineDev;
     const mejores = [].concat(...['separado', 'mismos'].map(r => GENS.map(g => ESC.mejorC(r, g))));
     const vals = Object.assign({ dv2: F.pct(M.v2.p), dv21: F.pct(M.v21.p), dmedia: F.pct(M.media.p), ddisp: F.pct(M.disp.p) }, valsV1());
-    const beats = [0, 0, 1, 2];
+    const beats = [0, 0, 1];
     t.items.forEach((it, i) => root.appendChild(h('div', { cls: 'abs', style: box(96, 262 + i * 170, 1728, 156) + 'display:grid;grid-template-columns:400px 1fr;gap:40px;border-top:1px solid var(--line);padding-top:18px', anim: [beats[i], 'up', 0.15 + (i % 2) * 0.25] },
       `<div style="font-size:30px;font-weight:700"><span class="hl mono" style="font-size:22px;display:block">0${i + 1}</span>${it.t}</div><div style="font-size:25px;line-height:1.42;color:var(--ink2)">${tpl(it.d, vals)}</div>`)));
   };
